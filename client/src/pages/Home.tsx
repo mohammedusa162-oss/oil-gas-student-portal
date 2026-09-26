@@ -378,7 +378,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="footer print-hide"><span><span className="footer-mark"><Fuel size={14} /></span> بوابة الطالب · هندسة النفط والغاز</span><span>جامعة الزاوية · ليبيا</span><span className="designer-credit">المصمم: المهندس: Mohammed Alrawab</span><div className="report-export-tools"><FilterDropdown label="فصل التقرير" value={reportSemester === "الكل" ? "كل الفصول" : `الفصل ${reportSemester}`} open={openFilter === "reportSemester"} onToggle={() => setOpenFilter((current) => current === "reportSemester" ? null : "reportSemester")} options={[{ value: "الكل", label: "كل الفصول" }, ...[1, 2, 3, 4, 5, 6, 7, 8].map((item) => ({ value: String(item), label: `الفصل ${item}` }))]} selected={reportSemester} onChange={(value) => { setReportSemester(value); setOpenFilter(null); }} /><button onClick={downloadPdfDirect}><FileText size={14} /> طباعة / حفظ PDF</button></div></footer>
+      <footer className="footer print-hide"><span><span className="footer-mark"><Fuel size={14} /></span> بوابة الطالب · هندسة النفط والغاز</span><span>جامعة الزاوية · ليبيا</span><span className="designer-credit">المصمم: المهندس: Mohammed Alrawab</span></footer>
 
       <section className="print-report" aria-label="التقرير الأكاديمي للطباعة">
         <header className="report-header">
