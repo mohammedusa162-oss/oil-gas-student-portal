@@ -376,6 +376,10 @@ h2 { margin-top: 4px; font-family: "Changa", sans-serif; font-size: 23px; line-h
 .filter-menu button:hover, .filter-menu button.selected { color: #ffd54f; background: rgba(245,179,1,.1); }
 .filter-menu button svg { color: #43d17a; }
 .option-dot { width: 15px; height: 15px; display: inline-block; flex: 0 0 15px; border: 1px solid #5c6b7a; border-radius: 50%; }
+.report-export-tools { display: flex; align-items: flex-end; gap: 10px; }
+.report-export-tools .filter-dropdown { min-width: 132px; }
+.report-export-tools > button { height: 38px; display: inline-flex; align-items: center; gap: 7px; padding: 0 12px; color: #15191f; border-radius: 10px; background: #f5b301; font-size: 11px; font-weight: 700; }
+.report-export-tools > button:hover { background: #ffd24d; }
 @keyframes menu-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
 .print-report { display: none; }

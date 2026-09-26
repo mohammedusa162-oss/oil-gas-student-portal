@@ -175,7 +175,8 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [semester, setSemester] = useState("الكل");
   const [typeFilter, setTypeFilter] = useState<(typeof typeFilters)[number]>("الكل");
-  const [openFilter, setOpenFilter] = useState<"semester" | "type" | null>(null);
+  const [openFilter, setOpenFilter] = useState<"semester" | "type" | "reportSemester" | null>(null);
+  const [reportSemester, setReportSemester] = useState("الكل");
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   useEffect(() => {
@@ -198,6 +199,13 @@ export default function Home() {
   const percentage = Math.round((completedCredits / TOTAL_CREDITS) * 100);
   const displayName = studentName || "مهندس مستجد";
   const remainingCourseList = courses.filter((course) => !completed.includes(course.id));
+  const reportCourses = reportSemester === "الكل" ? courses : courses.filter((course) => course.semester === Number(reportSemester));
+  const reportCompletedCourses = reportCourses.filter((course) => completed.includes(course.id));
+  const reportRemainingCourses = reportCourses.filter((course) => !completed.includes(course.id));
+  const reportTotalCredits = reportCourses.reduce((sum, course) => sum + (course.credits ?? 0), 0);
+  const reportCompletedCredits = reportCompletedCourses.reduce((sum, course) => sum + (course.credits ?? 0), 0);
+  const reportRemainingCredits = reportTotalCredits - reportCompletedCredits;
+  const reportPercentage = reportTotalCredits ? Math.round((reportCompletedCredits / reportTotalCredits) * 100) : 0;
   const filteredCourses = useMemo(
     () =>
       courses.filter((course) => {
@@ -425,7 +433,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="footer print-hide"><span><span className="footer-mark"><Fuel size={14} /></span> بوابة الطالب · هندسة النفط والغاز</span><span>جامعة الزاوية · ليبيا</span><button onClick={downloadPdfDirect}><FileText size={14} /> تحميل التقرير PDF</button></footer>
+      <footer className="footer print-hide"><span><span className="footer-mark"><Fuel size={14} /></span> بوابة الطالب · هندسة النفط والغاز</span><span>جامعة الزاوية · ليبيا</span><div className="report-export-tools"><FilterDropdown label="فصل التقرير" value={reportSemester === "الكل" ? "كل الفصول" : `الفصل ${reportSemester}`} open={openFilter === "reportSemester"} onToggle={() => setOpenFilter((current) => current === "reportSemester" ? null : "reportSemester")} options={[{ value: "الكل", label: "كل الفصول" }, ...[1, 2, 3, 4, 5, 6, 7, 8].map((item) => ({ value: String(item), label: `الفصل ${item}` }))]} selected={reportSemester} onChange={(value) => { setReportSemester(value); setOpenFilter(null); }} /><button onClick={downloadPdfDirect}><FileText size={14} /> تحميل التقرير PDF</button></div></footer>
 
       <section className="print-report" aria-label="التقرير الأكاديمي للطباعة">
         <header className="report-header">
@@ -433,10 +441,10 @@ export default function Home() {
           <div className="report-title"><span>التقرير الأكاديمي</span><strong>سجل التقدم نحو التخرج</strong></div>
         </header>
         <div className="report-student"><span>اسم الطالب</span><strong>{displayName}</strong><span>تاريخ الإصدار</span><strong>{new Intl.DateTimeFormat("ar-LY", { dateStyle: "long" }).format(new Date())}</strong></div>
-        <div className="report-summary"><div><span>نسبة الإنجاز</span><strong>{percentage}%</strong></div><div><span>الوحدات المنجزة</span><strong>{completedCredits} / {TOTAL_CREDITS}</strong></div><div><span>المواد المكتملة</span><strong>{completedCourses.length} / {courses.length}</strong></div></div>
-        <ReportTable title="المواد المنجزة" items={completedCourses} totalCredits={completedCredits} done />
-        <ReportTable title="المواد المتبقية" items={remainingCourseList} totalCredits={remainingCredits} />
-        <footer className="report-footer"><span>بوابة الطالب · جامعة الزاوية</span><span>هندسة النفط والغاز · {percentage}% إنجاز</span></footer>
+        <div className="report-summary"><div><span>نسبة الإنجاز {reportSemester === "الكل" ? "العامة" : `· الفصل ${reportSemester}`}</span><strong>{reportPercentage}%</strong></div><div><span>الوحدات المنجزة</span><strong>{reportCompletedCredits} / {reportTotalCredits}</strong></div><div><span>المواد المكتملة</span><strong>{reportCompletedCourses.length} / {reportCourses.length}</strong></div></div>
+        <ReportTable title={`المواد المنجزة${reportSemester === "الكل" ? "" : ` · الفصل ${reportSemester}`}`} items={reportCompletedCourses} totalCredits={reportCompletedCredits} done />
+        <ReportTable title={`المواد المتبقية${reportSemester === "الكل" ? "" : ` · الفصل ${reportSemester}`}`} items={reportRemainingCourses} totalCredits={reportRemainingCredits} />
+        <footer className="report-footer"><span>بوابة الطالب · جامعة الزاوية</span><span>هندسة النفط والغاز · {reportPercentage}% إنجاز</span></footer>
       </section>
 
       {onboardingOpen && (
