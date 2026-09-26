@@ -24,8 +24,6 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
-// @ts-ignore html2pdf.js does not ship TypeScript declarations.
-import html2pdf from "html2pdf.js";
 type Course = {
   id: number;
   name: string;
@@ -242,81 +240,25 @@ export default function Home() {
     toast.success("تمت إعادة ضبط التقدم");
   }
 
-  function printReport() {
-    const report = document.querySelector(".print-report");
-    if (!report) return;
-    const reportWindow = window.open("", "_blank", "width=960,height=760");
-    if (!reportWindow) {
-      toast.error("تعذر فتح التقرير. اسمح بالنوافذ المنبثقة ثم حاول مرة أخرى.");
-      return;
-    }
-    reportWindow.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="UTF-8" /><title>التقرير الأكاديمي - ${displayName}</title><style>
-      @page{size:A4;margin:14mm}*{box-sizing:border-box}body{margin:0;color:#17202a;font-family:Arial,"Tahoma",sans-serif;font-size:11px}h2{margin:0;font-size:15px}.report-header,.report-student,.report-summary,.report-section-title,.report-footer{display:flex;align-items:center;justify-content:space-between}.report-header{padding-bottom:14px;border-bottom:3px solid #f5b301}.report-brand{display:flex;align-items:center;gap:10px}.report-logo{width:48px;height:48px;display:grid;place-items:center;color:#fff;border-radius:12px;background:#f5b301}.report-brand strong,.report-brand small,.report-title span,.report-title strong{display:block}.report-brand strong{font-size:18px}.report-brand small{margin-top:2px;color:#5c6b7a;font-size:10px}.report-title{text-align:left}.report-title span{color:#986d00;font-size:11px}.report-title strong{margin-top:2px;font-size:16px}.report-student{gap:8px;margin-top:18px;padding:11px 13px;border:1px solid #dfe3e7;background:#fafbfc;font-size:10px}.report-student span{color:#5c6b7a}.report-student strong{margin-left:auto}.report-summary{justify-content:flex-start;gap:8px;margin:14px 0 20px}.report-summary div{min-width:150px;padding:9px 12px;border-right:3px solid #f5b301;background:#fafbfc}.report-summary span,.report-summary strong{display:block}.report-summary span{color:#5c6b7a;font-size:9px}.report-summary strong{margin-top:2px;font-size:17px}.report-table-section{margin-top:19px;break-inside:avoid}.report-section-title{margin-bottom:7px}.report-section-title span{font-size:9px}.report-done{color:#238c50}.report-remaining{color:#986d00}table{width:100%;border-collapse:collapse;font-size:9px}th{padding:6px 8px;color:#5c6b7a;border-bottom:1px solid #b9c2cb;background:#f1f4f6;text-align:right}td{padding:5px 8px;border-bottom:1px solid #e5e8eb}tbody tr:nth-child(even){background:#fafbfc}.report-footer{margin-top:24px;padding-top:9px;color:#5c6b7a;border-top:1px solid #dfe3e7;font-size:9px}.print-actions{display:flex;gap:8px;margin-top:24px}@media print{.print-actions{display:none}}
-    </style></head><body>${report.innerHTML}<div class="print-actions"><button onclick="window.print()">طباعة / حفظ PDF</button><button onclick="window.close()">إغلاق</button></div></body></html>`);
-    reportWindow.document.close();
-    reportWindow.focus();
-    toast.success("تم فتح التقرير. اختر طباعة ثم حفظ كـ PDF");
-  }
-  function printReportDirect() {
-    document.body.classList.add("printing-report");
-    window.print();
-  }
-  async function downloadPdf() {
+  function downloadPdfDirect() {
     const report = document.querySelector(".print-report") as HTMLElement | null;
     if (!report) {
       toast.error("تعذر تجهيز التقرير");
       return;
     }
-    const exportNode = report.cloneNode(true) as HTMLElement;
-    exportNode.classList.remove("print-report");
-    exportNode.style.display = "block";
-    exportNode.style.position = "absolute";
-    exportNode.style.left = "0";
-    exportNode.style.top = "0";
-    exportNode.style.zIndex = "99999";
-    exportNode.style.pointerEvents = "none";
-    exportNode.style.width = "794px";
-    exportNode.style.padding = "24px";
-    exportNode.style.background = "#ffffff";
-    exportNode.style.color = "#17202a";
-    exportNode.style.fontFamily = 'Arial, "Tahoma", sans-serif';
-    document.body.appendChild(exportNode);
-    toast.info("جارٍ تجهيز ملف PDF...");
-    try {
-      await html2pdf().set({
-        margin: 8,
-        filename: `تقرير-${displayName}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      }).from(exportNode).save();
-      toast.success("تم تنزيل تقرير PDF بنجاح");
-    } catch {
-      toast.error("تعذر إنشاء PDF. جرّب مرة أخرى");
-    } finally {
-      exportNode.remove();
-    }
-  }
-  async function downloadPdfDirect() {
-    const report = document.querySelector(".print-report") as HTMLElement | null;
-    if (!report) return;
     const previousStyle = report.getAttribute("style");
-    document.body.classList.add("exporting-pdf");
-    Object.assign(report.style, { display: "block", position: "relative", left: "auto", top: "auto", width: "100%", padding: "24px", background: "#fff", color: "#17202a" });
-    toast.info("جارٍ تجهيز ملف PDF...");
-    try {
-      await new Promise((resolve) => window.setTimeout(resolve, 120));
-      await html2pdf().set({ margin: 8, filename: `تقرير-${displayName}.pdf`, image: { type: "jpeg", quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" }, jsPDF: { unit: "mm", format: "a4", orientation: "portrait" } }).from(report).save();
-      toast.success("تم تنزيل تقرير PDF بنجاح");
-    } catch {
-      toast.error("تعذر إنشاء PDF. جرّب مرة أخرى");
-    } finally {
-      document.body.classList.remove("exporting-pdf");
-      if (previousStyle === null) report.removeAttribute("style");
-      else report.setAttribute("style", previousStyle);
-    }
+    document.body.classList.add("printing-report");
+    Object.assign(report.style, { display: "block", position: "relative", width: "100%", padding: "24px", background: "#fff", color: "#17202a" });
+    toast.info("سيُفتح مربع الطباعة؛ اختر حفظ كـ PDF لإتمام التنزيل");
+    window.setTimeout(() => {
+      window.print();
+      window.setTimeout(() => {
+        document.body.classList.remove("printing-report");
+        if (previousStyle === null) report.removeAttribute("style");
+        else report.setAttribute("style", previousStyle);
+      }, 300);
+    }, 120);
   }
-
   return (
     <div className="app-shell" dir="rtl">
       <div className="ambient-grid" aria-hidden="true" />
@@ -337,7 +279,7 @@ export default function Home() {
           <button className="icon-button menu-button" aria-label="فتح القائمة" onClick={() => setShowMobileMenu((current) => !current)}>
             {showMobileMenu ? <X size={20} /> : <Menu size={20} />}
           </button>
-          <button className="ghost-button print-hide" onClick={downloadPdfDirect}><Printer size={17} /> <span>تقرير PDF</span></button>
+          <button className="ghost-button print-hide" onClick={downloadPdfDirect}><Printer size={17} /> <span>طباعة / حفظ PDF</span></button>
         </div>
       </header>
 
@@ -433,7 +375,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="footer print-hide"><span><span className="footer-mark"><Fuel size={14} /></span> بوابة الطالب · هندسة النفط والغاز</span><span>جامعة الزاوية · ليبيا</span><div className="report-export-tools"><FilterDropdown label="فصل التقرير" value={reportSemester === "الكل" ? "كل الفصول" : `الفصل ${reportSemester}`} open={openFilter === "reportSemester"} onToggle={() => setOpenFilter((current) => current === "reportSemester" ? null : "reportSemester")} options={[{ value: "الكل", label: "كل الفصول" }, ...[1, 2, 3, 4, 5, 6, 7, 8].map((item) => ({ value: String(item), label: `الفصل ${item}` }))]} selected={reportSemester} onChange={(value) => { setReportSemester(value); setOpenFilter(null); }} /><button onClick={downloadPdfDirect}><FileText size={14} /> تحميل التقرير PDF</button></div></footer>
+      <footer className="footer print-hide"><span><span className="footer-mark"><Fuel size={14} /></span> بوابة الطالب · هندسة النفط والغاز</span><span>جامعة الزاوية · ليبيا</span><div className="report-export-tools"><FilterDropdown label="فصل التقرير" value={reportSemester === "الكل" ? "كل الفصول" : `الفصل ${reportSemester}`} open={openFilter === "reportSemester"} onToggle={() => setOpenFilter((current) => current === "reportSemester" ? null : "reportSemester")} options={[{ value: "الكل", label: "كل الفصول" }, ...[1, 2, 3, 4, 5, 6, 7, 8].map((item) => ({ value: String(item), label: `الفصل ${item}` }))]} selected={reportSemester} onChange={(value) => { setReportSemester(value); setOpenFilter(null); }} /><button onClick={downloadPdfDirect}><FileText size={14} /> طباعة / حفظ PDF</button></div></footer>
 
       <section className="print-report" aria-label="التقرير الأكاديمي للطباعة">
         <header className="report-header">
