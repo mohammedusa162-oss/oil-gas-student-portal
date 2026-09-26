@@ -30,72 +30,75 @@ type Course = {
   name: string;
   code: string;
   type: "إجبارية" | "اختيارية" | "جامعة";
-  credits: number;
+  credits: number | null;
   semester: number;
 };
 
 const courses: Course[] = [
-  { id: 1, name: "اللغة العربية", code: "UNI 101", type: "جامعة", credits: 2, semester: 1 },
-  { id: 2, name: "اللغة الإنجليزية (1)", code: "ENG 101", type: "جامعة", credits: 2, semester: 1 },
-  { id: 3, name: "الرياضيات (1)", code: "MATH 101", type: "إجبارية", credits: 2, semester: 1 },
-  { id: 4, name: "الفيزياء العامة", code: "PHYS 101", type: "إجبارية", credits: 2, semester: 1 },
-  { id: 5, name: "الرسم الهندسي", code: "ENGR 101", type: "إجبارية", credits: 2, semester: 1 },
-  { id: 6, name: "مهارات الحاسوب", code: "CS 101", type: "جامعة", credits: 2, semester: 1 },
-  { id: 7, name: "الثقافة الوطنية", code: "UNI 102", type: "جامعة", credits: 2, semester: 2 },
-  { id: 8, name: "اللغة الإنجليزية (2)", code: "ENG 102", type: "جامعة", credits: 2, semester: 2 },
-  { id: 9, name: "الرياضيات (2)", code: "MATH 102", type: "إجبارية", credits: 2, semester: 2 },
-  { id: 10, name: "الكيمياء العامة", code: "CHEM 101", type: "إجبارية", credits: 2, semester: 2 },
-  { id: 11, name: "مقدمة في الهندسة", code: "ENGR 102", type: "إجبارية", credits: 2, semester: 2 },
-  { id: 12, name: "الاحتمالات والإحصاء", code: "STAT 201", type: "إجبارية", credits: 2, semester: 3 },
-  { id: 13, name: "البرمجة الهندسية", code: "CS 201", type: "إجبارية", credits: 2, semester: 3 },
-  { id: 14, name: "الجيولوجيا العامة", code: "GEOL 201", type: "إجبارية", credits: 2, semester: 3 },
-  { id: 15, name: "السلامة المهنية", code: "HSE 201", type: "إجبارية", credits: 2, semester: 3 },
-  { id: 16, name: "ميكانيكا الموائع", code: "PET 201", type: "إجبارية", credits: 3, semester: 3 },
-  { id: 17, name: "الجيولوجيا البترولية", code: "PET 202", type: "إجبارية", credits: 3, semester: 3 },
-  { id: 18, name: "خواص الصخور والسوائل", code: "PET 203", type: "إجبارية", credits: 3, semester: 4 },
-  { id: 19, name: "هندسة المكامن (1)", code: "PET 204", type: "إجبارية", credits: 3, semester: 4 },
-  { id: 20, name: "هندسة الحفر (1)", code: "PET 205", type: "إجبارية", credits: 3, semester: 4 },
-  { id: 21, name: "هندسة الإنتاج (1)", code: "PET 206", type: "إجبارية", credits: 3, semester: 4 },
-  { id: 22, name: "البتروفيزياء", code: "PET 207", type: "إجبارية", credits: 3, semester: 4 },
-  { id: 23, name: "الرياضيات الهندسية", code: "MATH 301", type: "إجبارية", credits: 3, semester: 4 },
-  { id: 24, name: "اقتصاديات النفط والغاز", code: "PET 301", type: "إجبارية", credits: 3, semester: 5 },
-  { id: 25, name: "هندسة المكامن (2)", code: "PET 302", type: "إجبارية", credits: 3, semester: 5 },
-  { id: 26, name: "هندسة الحفر (2)", code: "PET 303", type: "إجبارية", credits: 3, semester: 5 },
-  { id: 27, name: "هندسة الإنتاج (2)", code: "PET 304", type: "إجبارية", credits: 3, semester: 5 },
-  { id: 28, name: "اختبارات الآبار", code: "PET 305", type: "إجبارية", credits: 3, semester: 5 },
-  { id: 29, name: "تسجيلات الآبار", code: "PET 306", type: "إجبارية", credits: 3, semester: 5 },
-  { id: 30, name: "هندسة الغاز الطبيعي", code: "PET 307", type: "إجبارية", credits: 3, semester: 5 },
-  { id: 31, name: "المحاكاة المكمنية", code: "PET 308", type: "اختيارية", credits: 3, semester: 6 },
-  { id: 32, name: "هندسة خطوط الأنابيب", code: "PET 309", type: "إجبارية", credits: 3, semester: 6 },
-  { id: 33, name: "منشآت الإنتاج السطحية", code: "PET 310", type: "إجبارية", credits: 3, semester: 6 },
-  { id: 34, name: "التحفيز البترولي", code: "PET 311", type: "اختيارية", credits: 3, semester: 6 },
-  { id: 35, name: "الحفر الاتجاهي", code: "PET 312", type: "إجبارية", credits: 3, semester: 6 },
-  { id: 36, name: "إدارة المشاريع الهندسية", code: "ENGR 301", type: "جامعة", credits: 3, semester: 6 },
-  { id: 37, name: "التدريب الحقلي", code: "PET 401", type: "إجبارية", credits: 3, semester: 7 },
-  { id: 38, name: "تطوير الحقول النفطية", code: "PET 402", type: "إجبارية", credits: 3, semester: 7 },
-  { id: 39, name: "الهندسة البحرية", code: "PET 403", type: "اختيارية", credits: 3, semester: 7 },
-  { id: 40, name: "التحكم في الآبار", code: "PET 404", type: "إجبارية", credits: 3, semester: 7 },
-  { id: 41, name: "هندسة التآكل", code: "PET 405", type: "اختيارية", credits: 3, semester: 7 },
-  { id: 42, name: "البيئة وصناعة النفط", code: "PET 406", type: "إجبارية", credits: 3, semester: 7 },
-  { id: 43, name: "المنشآت البترولية", code: "PET 407", type: "إجبارية", credits: 3, semester: 7 },
-  { id: 44, name: "الطرق العددية", code: "MATH 401", type: "اختيارية", credits: 3, semester: 7 },
-  { id: 45, name: "مشروع التخرج (1)", code: "PET 408", type: "إجبارية", credits: 3, semester: 8 },
-  { id: 46, name: "مشروع التخرج (2)", code: "PET 409", type: "إجبارية", credits: 3, semester: 8 },
-  { id: 47, name: "إدارة المكامن", code: "PET 410", type: "إجبارية", credits: 3, semester: 8 },
-  { id: 48, name: "الاستخلاص المعزز للنفط", code: "PET 411", type: "اختيارية", credits: 3, semester: 8 },
-  { id: 49, name: "تقنيات الغاز المسال", code: "PET 412", type: "اختيارية", credits: 3, semester: 8 },
-  { id: 50, name: "تحليل البيانات البترولية", code: "PET 413", type: "اختيارية", credits: 3, semester: 8 },
-  { id: 51, name: "أخلاقيات المهنة", code: "UNI 401", type: "جامعة", credits: 3, semester: 8 },
-  { id: 52, name: "ندوة هندسية", code: "ENGR 402", type: "اختيارية", credits: 3, semester: 8 },
-  { id: 53, name: "نمذجة ومحاكاة", code: "PET 414", type: "اختيارية", credits: 3, semester: 8 },
-  { id: 54, name: "إدارة العمليات", code: "PET 415", type: "اختيارية", credits: 3, semester: 8 },
-  { id: 55, name: "الاستدامة في الطاقة", code: "PET 416", type: "اختيارية", credits: 3, semester: 8 },
-  { id: 56, name: "موضوعات خاصة في النفط", code: "PET 417", type: "اختيارية", credits: 3, semester: 8 },
-  { id: 57, name: "حلقة بحث", code: "PET 418", type: "اختيارية", credits: 3, semester: 8 },
+  { id: 1, name: "اللغة الإنجليزية 1 – English Language 1", code: "GH141", type: "جامعة", credits: 2, semester: 1 },
+  { id: 2, name: "اللغة العربية 1 – Arabic Language 1", code: "GH150", type: "جامعة", credits: 2, semester: 1 },
+  { id: 3, name: "رياضيات 1 – Mathematics 1", code: "GS101", type: "إجبارية", credits: 3, semester: 1 },
+  { id: 4, name: "فيزياء 1 – Physics 1", code: "GS111", type: "إجبارية", credits: 3, semester: 1 },
+  { id: 5, name: "الكيمياء العامة – General Chemistry", code: "GS115", type: "إجبارية", credits: 3, semester: 1 },
+  { id: 6, name: "الجيولوجيا الفيزيائية – Physical Geology", code: "GLE211", type: "إجبارية", credits: 3, semester: 1 },
+  { id: 7, name: "ميكانيكا هندسية 1 – Eng. Mechanics 1", code: "GE121", type: "إجبارية", credits: 3, semester: 1 },
+  { id: 8, name: "رسم هندسي – Engineering Drawing", code: "GS126", type: "إجبارية", credits: 3, semester: 1 },
+  { id: 9, name: "اللغة الإنجليزية 2 – English Language 2", code: "GH142", type: "جامعة", credits: 2, semester: 2 },
+  { id: 10, name: "اللغة العربية 2 – Arabic Language 2", code: "GH151", type: "جامعة", credits: 2, semester: 2 },
+  { id: 11, name: "رياضيات 2 – Mathematics 2", code: "GS102", type: "إجبارية", credits: 4, semester: 2 },
+  { id: 12, name: "فيزياء 2 – Physics 2", code: "GS112", type: "إجبارية", credits: 3, semester: 2 },
+  { id: 13, name: "معمل كيمياء – Chemistry Lab", code: "GS115L", type: "إجبارية", credits: 1, semester: 2 },
+  { id: 14, name: "كيمياء فيزيائية – Physical Chemistry", code: "GHE211", type: "إجبارية", credits: 3, semester: 2 },
+  { id: 15, name: "علم المعادن والصخور – Mineralogy & Petrology", code: "GLE221", type: "إجبارية", credits: 3, semester: 2 },
+  { id: 16, name: "جيولوجيا إنشائية – Structural Geology", code: "GLE222", type: "إجبارية", credits: 3, semester: 2 },
+  { id: 17, name: "علم الرسوبيات – Sedimentation", code: "GLE223", type: "إجبارية", credits: 3, semester: 2 },
+  { id: 18, name: "خواص المواد – Properties of Materials", code: "GS133", type: "إجبارية", credits: 3, semester: 2 },
+  { id: 19, name: "اللغة الإنجليزية 3 – English Language 3", code: "GH343", type: "جامعة", credits: 3, semester: 3 },
+  { id: 20, name: "رياضيات 3 – Mathematics 3", code: "GS203", type: "إجبارية", credits: 3, semester: 3 },
+  { id: 21, name: "معمل كيمياء فيزيائية 1 – Physical Chemistry Lab 1", code: "GHE211L", type: "إجبارية", credits: 1, semester: 3 },
+  { id: 22, name: "معمل فيزياء 1 – Physics Lab 1", code: "GS112L", type: "إجبارية", credits: 1, semester: 3 },
+  { id: 23, name: "ميكانيكا الموائع – Fluid Mechanics", code: "CHE311", type: "إجبارية", credits: 3, semester: 3 },
+  { id: 24, name: "ميكانيكا الصخور والتربة – Rock Mechanics & Soil Mechanics", code: "GLE314", type: "إجبارية", credits: 3, semester: 3 },
+  { id: 25, name: "المساحة والجيوديسية – Survey", code: "GPE205", type: "إجبارية", credits: 3, semester: 3 },
+  { id: 26, name: "مقدمة في الهندسة الجيوفيزيائية – Intro. to Geophysics Engineering", code: "GPE324", type: "إجبارية", credits: 3, semester: 3 },
+  { id: 27, name: "الاحتمالات والإحصاء – Probability & Statistics", code: "GS206", type: "إجبارية", credits: 3, semester: 3 },
+  { id: 28, name: "كتابة التقارير – Technical Writing", code: "GH152", type: "جامعة", credits: 1, semester: 3 },
+  { id: 29, name: "الثقافة الوطنية – National Culture", code: "GH299", type: "جامعة", credits: 2, semester: 3 },
+  { id: 30, name: "جيولوجيا البترول 1 – Petroleum Geology 1", code: "GLE391", type: "إجبارية", credits: 3, semester: 4 },
+  { id: 31, name: "الجيوكيمياء – Geochemistry", code: "GLE421", type: "إجبارية", credits: 3, semester: 4 },
+  { id: 32, name: "الاستشعار عن بُعد والفوتوجيولوجيا – Remote Sensing & Photogeology", code: "GLE313", type: "إجبارية", credits: 3, semester: 4 },
+  { id: 33, name: "علم الطبقات – Stratigraphy", code: "GLE311", type: "إجبارية", credits: 3, semester: 4 },
+  { id: 34, name: "الأشعة السينية – X-Ray", code: "GLE411", type: "اختيارية", credits: 3, semester: 4 },
+  { id: 35, name: "برمجة الحاسوب 1 – Computer Programming 1", code: "GS200", type: "إجبارية", credits: 3, semester: 4 },
+  { id: 36, name: "ميكانيكا هندسية 2 – Eng. Mechanics 2", code: "GE222", type: "إجبارية", credits: 3, semester: 4 },
+  { id: 37, name: "هندسة الحفر – Drilling Engineering", code: "PTE373", type: "إجبارية", credits: 3, semester: 5 },
+  { id: 38, name: "إدارة المشاريع – Projects Management", code: "GLE425", type: "إجبارية", credits: 3, semester: 5 },
+  { id: 39, name: "الجيولوجيا الاقتصادية – Economic Geology", code: "GLE412", type: "إجبارية", credits: 3, semester: 5 },
+  { id: 40, name: "رياضيات 4 – Mathematics 4", code: "GS204", type: "إجبارية", credits: 3, semester: 5 },
+  { id: 41, name: "علم المياه – Hydrology", code: "GLE426", type: "إجبارية", credits: 3, semester: 5 },
+  { id: 42, name: "سجلات الآبار 1 – Well Logging 1", code: "GPE371", type: "إجبارية", credits: 3, semester: 5 },
+  { id: 43, name: "الهندسة الجيوتقنية – Geo-Engineering", code: "GLE413", type: "إجبارية", credits: 3, semester: 5 },
+  { id: 44, name: "التحليل العددي – Numerical Analysis", code: "GS309", type: "إجبارية", credits: 3, semester: 5 },
+  { id: 45, name: "تحليل الأحواض – Basins Analysis", code: "GLE577", type: "اختيارية", credits: 3, semester: 6 },
+  { id: 46, name: "سريان المياه الجوفية – Ground Water Flow", code: "GLE507", type: "اختيارية", credits: 3, semester: 6 },
+  { id: 47, name: "سجلات الآبار 2 – Well Logging 2", code: "GLE524", type: "إجبارية", credits: 3, semester: 6 },
+  { id: 48, name: "جيولوجيا ليبيا – Geology of Libya", code: "GLE471", type: "إجبارية", credits: 3, semester: 6 },
+  { id: 49, name: "خواص صخور المكامن – Reservoir Rock Properties", code: "GLE417", type: "إجبارية", credits: 3, semester: 6 },
+  { id: 50, name: "الجيولوجيا تحت السطحية – Subsurface Geology", code: "GLE423", type: "إجبارية", credits: 3, semester: 6 },
+  { id: 51, name: "مبادئ التتابع الطبقي – Principles of Sequence Stratigraphy", code: "GLE523", type: "اختيارية", credits: 3, semester: 6 },
+  { id: 52, name: "تطبيقات الحاسب في الجيولوجيا والجيوفيزياء – Computer Applications in Geology & Geophysics", code: "GLE415", type: "اختيارية", credits: 3, semester: 6 },
+  { id: 53, name: "الجيوكيمياء النفطية – Petroleum Geochemistry", code: "GLE533", type: "اختيارية", credits: 3, semester: 7 },
+  { id: 54, name: "جيولوجيا البترول 2 – Petroleum Geology 2", code: "GLE555", type: "إجبارية", credits: 3, semester: 7 },
+  { id: 55, name: "تفسير المقطعيات السيزمية – Seismic Data Interpretation", code: "GPE573", type: "إجبارية", credits: 3, semester: 7 },
+  { id: 56, name: "الجيولوجيا الحقلية (مخيّم) – Field Geology", code: "GLE523", type: "إجبارية", credits: 4, semester: 7 },
+  { id: 57, name: "الندوة الجيولوجية والجيوفيزيائية – Geological & Geophysical Seminar", code: "GLE522", type: "اختيارية", credits: 1, semester: 7 },
+  { id: 58, name: "مادة اختيارية 1 – Elective 1", code: "—", type: "اختيارية", credits: null, semester: 8 },
+  { id: 59, name: "مشروع التخرج 1 – Graduate Project 1", code: "GLE595", type: "إجبارية", credits: 2, semester: 8 },
+  { id: 60, name: "مشروع التخرج 2 – Graduate Project 2", code: "GLE599", type: "إجبارية", credits: 4, semester: 8 },
 ];
 
-const TOTAL_CREDITS = courses.reduce((sum, course) => sum + course.credits, 0);
-const defaultCompleted = [1, 2, 3, 4, 16, 17, 18, 19, 20, 21];
+const TOTAL_CREDITS = courses.reduce((sum, course) => sum + (course.credits ?? 0), 0);
+const defaultCompleted: number[] = [];
 const typeFilters = ["الكل", "إجبارية", "اختيارية", "جامعة"] as const;
 
 function readStorage<T>(key: string, fallback: T): T {
@@ -163,11 +166,11 @@ function StatCard({ label, value, caption, tone, icon }: { label: string; value:
 }
 
 export default function Home() {
-  const [studentName, setStudentName] = useState(() => readStorage("oil-gas-student-name", ""));
+  const [studentName, setStudentName] = useState(() => readStorage("oil-gas-student-name-v2", "محمد الرواب"));
   const [nameDraft, setNameDraft] = useState(studentName);
   const [editingName, setEditingName] = useState(false);
-  const [onboardingOpen, setOnboardingOpen] = useState(() => !localStorage.getItem("oil-gas-student-name"));
-  const [completed, setCompleted] = useState<number[]>(() => readStorage("oil-gas-completed-courses", defaultCompleted));
+  const [onboardingOpen, setOnboardingOpen] = useState(() => !localStorage.getItem("oil-gas-student-name-v2"));
+  const [completed, setCompleted] = useState<number[]>(() => readStorage("oil-gas-completed-courses-v2", defaultCompleted));
   const [query, setQuery] = useState("");
   const [semester, setSemester] = useState("الكل");
   const [typeFilter, setTypeFilter] = useState<(typeof typeFilters)[number]>("الكل");
@@ -175,12 +178,12 @@ export default function Home() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   useEffect(() => {
-    if (studentName.trim()) localStorage.setItem("oil-gas-student-name", JSON.stringify(studentName));
-    else localStorage.removeItem("oil-gas-student-name");
+    if (studentName.trim()) localStorage.setItem("oil-gas-student-name-v2", JSON.stringify(studentName));
+    else localStorage.removeItem("oil-gas-student-name-v2");
   }, [studentName]);
 
   useEffect(() => {
-    localStorage.setItem("oil-gas-completed-courses", JSON.stringify(completed));
+    localStorage.setItem("oil-gas-completed-courses-v2", JSON.stringify(completed));
   }, [completed]);
   useEffect(() => {
     const restoreAfterPrint = () => document.body.classList.remove("printing-report");
@@ -189,7 +192,7 @@ export default function Home() {
   }, []);
 
   const completedCourses = useMemo(() => courses.filter((course) => completed.includes(course.id)), [completed]);
-  const completedCredits = completedCourses.reduce((sum, course) => sum + course.credits, 0);
+  const completedCredits = completedCourses.reduce((sum, course) => sum + (course.credits ?? 0), 0);
   const remainingCredits = TOTAL_CREDITS - completedCredits;
   const percentage = Math.round((completedCredits / TOTAL_CREDITS) * 100);
   const displayName = studentName || "مهندس مستجد";
@@ -347,7 +350,7 @@ export default function Home() {
                   <span className="course-main"><strong>{course.name}</strong><small>{course.code}</small></span>
                   <span className="course-semester">الفصل {course.semester}</span>
                   <span className={`type-chip type-${course.type === "إجبارية" ? "required" : course.type === "اختيارية" ? "elective" : "university"}`}>{course.type}</span>
-                  <span className="course-credits"><strong>{course.credits}</strong><small>وحدات</small></span>
+                  <span className="course-credits"><strong>{course.credits ?? "—"}</strong><small>{course.credits === null ? "بدون وحدات" : "وحدات"}</small></span>
                   <span className="course-arrow"><ArrowUpLeft size={16} /></span>
                 </button>
               );
@@ -413,7 +416,7 @@ function ReportTable({ title, items, totalCredits, done = false }: { title: stri
   return (
     <section className="report-table-section">
       <div className="report-section-title"><h2>{title}</h2><span className={done ? "report-done" : "report-remaining"}>{items.length} مادة · {totalCredits} وحدة</span></div>
-      <table><thead><tr><th>المادة</th><th>الرمز</th><th>الفصل</th><th>النوع</th><th>الوحدات</th></tr></thead><tbody>{items.length ? items.map((course) => <tr key={course.id}><td>{course.name}</td><td dir="ltr">{course.code}</td><td>{course.semester}</td><td>{course.type}</td><td>{course.credits}</td></tr>) : <tr><td colSpan={5}>لا توجد مواد في هذه القائمة</td></tr>}</tbody></table>
+      <table><thead><tr><th>المادة</th><th>الرمز</th><th>الفصل</th><th>النوع</th><th>الوحدات</th></tr></thead><tbody>{items.length ? items.map((course) => <tr key={course.id}><td>{course.name}</td><td dir="ltr">{course.code}</td><td>{course.semester}</td><td>{course.type}</td><td>{course.credits ?? "—"}</td></tr>) : <tr><td colSpan={5}>لا توجد مواد في هذه القائمة</td></tr>}</tbody></table>
     </section>
   );
 }
