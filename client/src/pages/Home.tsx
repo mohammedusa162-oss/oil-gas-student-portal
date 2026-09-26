@@ -108,6 +108,10 @@ function readStorage<T>(key: string, fallback: T): T {
     return fallback;
   }
 }
+function readStudentName() {
+  const saved = readStorage<string | null>("oil-gas-student-name-v2", null);
+  return saved && !["محمد حسن", "Mohammed Hassan", "محمد الرواب"].includes(saved.trim()) ? saved : "";
+}
 
 function ProgressRing({ percentage }: { percentage: number }) {
   const radius = 78;
@@ -165,10 +169,10 @@ function StatCard({ label, value, caption, tone, icon }: { label: string; value:
 }
 
 export default function Home() {
-  const [studentName, setStudentName] = useState(() => readStorage("oil-gas-student-name-v2", "محمد الرواب"));
+  const [studentName, setStudentName] = useState(readStudentName);
   const [nameDraft, setNameDraft] = useState(studentName);
   const [editingName, setEditingName] = useState(false);
-  const [onboardingOpen, setOnboardingOpen] = useState(() => !localStorage.getItem("oil-gas-student-name-v2"));
+  const [onboardingOpen, setOnboardingOpen] = useState(() => !readStudentName());
   const [completed, setCompleted] = useState<number[]>(() => readStorage("oil-gas-completed-courses-v2", defaultCompleted));
   const [query, setQuery] = useState("");
   const [semester, setSemester] = useState("الكل");
@@ -248,8 +252,7 @@ export default function Home() {
     }
     const previousStyle = report.getAttribute("style");
     document.body.classList.add("printing-report");
-    Object.assign(report.style, { display: "block", position: "relative", width: "100%", padding: "24px", background: "#fff", color: "#17202a" });
-    toast.info("سيُفتح مربع الطباعة؛ اختر حفظ كـ PDF لإتمام التنزيل");
+    Object.assign(report.style, { display: "block", position: "static", width: "100%", padding: "0", margin: "0", background: "#fff", color: "#17202a" });
     window.setTimeout(() => {
       window.print();
       window.setTimeout(() => {
@@ -375,7 +378,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="footer print-hide"><span><span className="footer-mark"><Fuel size={14} /></span> بوابة الطالب · هندسة النفط والغاز</span><span>جامعة الزاوية · ليبيا</span><div className="report-export-tools"><FilterDropdown label="فصل التقرير" value={reportSemester === "الكل" ? "كل الفصول" : `الفصل ${reportSemester}`} open={openFilter === "reportSemester"} onToggle={() => setOpenFilter((current) => current === "reportSemester" ? null : "reportSemester")} options={[{ value: "الكل", label: "كل الفصول" }, ...[1, 2, 3, 4, 5, 6, 7, 8].map((item) => ({ value: String(item), label: `الفصل ${item}` }))]} selected={reportSemester} onChange={(value) => { setReportSemester(value); setOpenFilter(null); }} /><button onClick={downloadPdfDirect}><FileText size={14} /> طباعة / حفظ PDF</button></div></footer>
+      <footer className="footer print-hide"><span><span className="footer-mark"><Fuel size={14} /></span> بوابة الطالب · هندسة النفط والغاز</span><span>جامعة الزاوية · ليبيا</span><span className="designer-credit">المصمم: المهندس: Mohammed Alrawab</span><div className="report-export-tools"><FilterDropdown label="فصل التقرير" value={reportSemester === "الكل" ? "كل الفصول" : `الفصل ${reportSemester}`} open={openFilter === "reportSemester"} onToggle={() => setOpenFilter((current) => current === "reportSemester" ? null : "reportSemester")} options={[{ value: "الكل", label: "كل الفصول" }, ...[1, 2, 3, 4, 5, 6, 7, 8].map((item) => ({ value: String(item), label: `الفصل ${item}` }))]} selected={reportSemester} onChange={(value) => { setReportSemester(value); setOpenFilter(null); }} /><button onClick={downloadPdfDirect}><FileText size={14} /> طباعة / حفظ PDF</button></div></footer>
 
       <section className="print-report" aria-label="التقرير الأكاديمي للطباعة">
         <header className="report-header">
