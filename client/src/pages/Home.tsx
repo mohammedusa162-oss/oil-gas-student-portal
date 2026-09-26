@@ -370,9 +370,9 @@ export default function Home() {
         <section id="resources" className="resources-section">
           <div className="section-heading"><div><span className="section-kicker">03 · بوابتك إلى الجامعة</span><h2>روابط مهمة وأدوات سريعة</h2><p>كل ما تحتاجه لتبقى قريباً من خطتك ومصادرك.</p></div></div>
           <div className="resource-grid">
-            <a className="resource-card" href="https://student.alzu.edu.ly" target="_blank" rel="noreferrer"><span className="resource-icon cyan"><Link2 size={20} /></span><span><strong>منظومة الطالب</strong><small>الدخول إلى النظام الأكاديمي</small></span><ExternalLink size={16} /></a>
-            <a className="resource-card" href="#courses"><span className="resource-icon gold"><Map size={20} /></span><span><strong>خريطة المواد</strong><small>استعرض الخطة الدراسية كاملة</small></span><ArrowUpLeft size={16} /></a>
-            <a className="resource-card" href="https://www.alzu.edu.ly" target="_blank" rel="noreferrer"><span className="resource-icon purple"><GraduationCap size={20} /></span><span><strong>عن الكلية والقسم</strong><small>جامعة الزاوية · كلية الهندسة</small></span><ExternalLink size={16} /></a>
+            <a className="resource-card" href="https://portal.esems.zu.edu.ly/student-portal/study-student/auth/login" target="_blank" rel="noreferrer"><span className="resource-icon cyan"><Link2 size={20} /></span><span><strong>منظومة الطالب</strong><small>الدخول إلى النظام الأكاديمي</small></span><ExternalLink size={16} /></a>
+            <a className="resource-card" href="https://i.ibb.co/NFzDxmw/petrophysics.png" target="_blank" rel="noreferrer"><span className="resource-icon gold"><Map size={20} /></span><span><strong>خريطة المواد</strong><small>استعرض الخطة الدراسية كاملة</small></span><ExternalLink size={16} /></a>
+            <a className="resource-card" href="https://www.facebook.com/share/1By4abMfmT/" target="_blank" rel="noreferrer"><span className="resource-icon purple"><GraduationCap size={20} /></span><span><strong>عن الكلية والقسم</strong><small>صفحة الكلية على Facebook</small></span><ExternalLink size={16} /></a>
             <button className="resource-card reset-card" onClick={resetProgress}><span className="resource-icon red"><RotateCcw size={20} /></span><span><strong>إعادة ضبط التقدم</strong><small>مسح المواد المنجزة والبدء من جديد</small></span><RotateCcw size={16} /></button>
           </div>
         </section>
