@@ -382,10 +382,10 @@ export default function Home() {
 
       <section className="print-report" aria-label="التقرير الأكاديمي للطباعة">
         <header className="report-header">
-          <div className="report-brand"><span className="report-logo"><Fuel size={25} /></span><div><strong>جامعة الزاوية</strong><small>كلية الهندسة · قسم هندسة النفط والغاز</small></div></div>
-          <div className="report-title"><span>التقرير الأكاديمي</span><strong>سجل التقدم نحو التخرج</strong></div>
+          <div className="report-brand"><img className="report-university-logo" src="/manus-storage/university-of-zawia-logo_6009d155.png" alt="شعار جامعة الزاوية" /><div><strong>كلية الهندسة</strong><small>قسم هندسة النفط والغاز · جامعة الزاوية</small></div></div>
+          <div className="report-title"><span>التقرير الأكاديمي</span><strong>سجل التقدم نحو التخرج</strong><small>Student Progress Record</small></div>
         </header>
-        <div className="report-student"><span>اسم الطالب</span><strong>{displayName}</strong><span>تاريخ الإصدار</span><strong>{new Intl.DateTimeFormat("ar-LY", { dateStyle: "long" }).format(new Date())}</strong></div>
+        <div className="report-student"><div className="report-field"><span>اسم الطالب</span><strong>{displayName}</strong></div><div className="report-field"><span>التخصص</span><strong>هندسة النفط والغاز</strong></div><div className="report-field"><span>تاريخ الإصدار</span><strong>{new Intl.DateTimeFormat("ar-LY", { dateStyle: "long" }).format(new Date())}</strong></div></div>
         <div className="report-summary"><div><span>نسبة الإنجاز {reportSemester === "الكل" ? "العامة" : `· الفصل ${reportSemester}`}</span><strong>{reportPercentage}%</strong></div><div><span>الوحدات المنجزة</span><strong>{reportCompletedCredits} / {reportTotalCredits}</strong></div><div><span>المواد المكتملة</span><strong>{reportCompletedCourses.length} / {reportCourses.length}</strong></div></div>
         <ReportTable title={`المواد المنجزة${reportSemester === "الكل" ? "" : ` · الفصل ${reportSemester}`}`} items={reportCompletedCourses} totalCredits={reportCompletedCredits} done />
         <ReportTable title={`المواد المتبقية${reportSemester === "الكل" ? "" : ` · الفصل ${reportSemester}`}`} items={reportRemainingCourses} totalCredits={reportRemainingCredits} />
