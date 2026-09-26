@@ -182,6 +182,11 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem("oil-gas-completed-courses", JSON.stringify(completed));
   }, [completed]);
+  useEffect(() => {
+    const restoreAfterPrint = () => document.body.classList.remove("printing-report");
+    window.addEventListener("afterprint", restoreAfterPrint);
+    return () => window.removeEventListener("afterprint", restoreAfterPrint);
+  }, []);
 
   const completedCourses = useMemo(() => courses.filter((course) => completed.includes(course.id)), [completed]);
   const completedCredits = completedCourses.reduce((sum, course) => sum + course.credits, 0);
@@ -240,6 +245,10 @@ export default function Home() {
     reportWindow.focus();
     toast.success("تم فتح التقرير. اختر طباعة ثم حفظ كـ PDF");
   }
+  function printReportDirect() {
+    document.body.classList.add("printing-report");
+    window.print();
+  }
 
   return (
     <div className="app-shell" dir="rtl">
@@ -261,7 +270,7 @@ export default function Home() {
           <button className="icon-button menu-button" aria-label="فتح القائمة" onClick={() => setShowMobileMenu((current) => !current)}>
             {showMobileMenu ? <X size={20} /> : <Menu size={20} />}
           </button>
-          <button className="ghost-button print-hide" onClick={printReport}><Printer size={17} /> <span>تقرير PDF</span></button>
+          <button className="ghost-button print-hide" onClick={printReportDirect}><Printer size={17} /> <span>تقرير PDF</span></button>
         </div>
       </header>
 
@@ -357,7 +366,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="footer print-hide"><span><span className="footer-mark"><Fuel size={14} /></span> بوابة الطالب · هندسة النفط والغاز</span><span>جامعة الزاوية · ليبيا</span><button onClick={printReport}><FileText size={14} /> طباعة التقرير</button></footer>
+      <footer className="footer print-hide"><span><span className="footer-mark"><Fuel size={14} /></span> بوابة الطالب · هندسة النفط والغاز</span><span>جامعة الزاوية · ليبيا</span><button onClick={printReportDirect}><FileText size={14} /> طباعة التقرير</button></footer>
 
       <section className="print-report" aria-label="التقرير الأكاديمي للطباعة">
         <header className="report-header">
