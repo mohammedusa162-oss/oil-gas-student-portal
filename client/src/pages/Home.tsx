@@ -108,6 +108,19 @@ function readStorage<T>(key: string, fallback: T): T {
     return fallback;
   }
 }
+function writeStorage(key: string, value: unknown) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    toast.error("تعذر حفظ التغيير محلياً");
+  }
+}
+function readCompletedCourses(): number[] {
+  const saved = readStorage<unknown>("oil-gas-completed-courses-v2", defaultCompleted);
+  if (!Array.isArray(saved)) return [];
+  const validIds = new Set(courses.map((course) => course.id));
+  return saved.filter((id): id is number => typeof id === "number" && Number.isInteger(id) && validIds.has(id)).filter((id, index, ids) => ids.indexOf(id) === index);
+}
 function readStudentName() {
   const saved = readStorage<string | null>("oil-gas-student-name-v2", null);
   return saved && !["محمد حسن", "Mohammed Hassan", "محمد الرواب"].includes(saved.trim()) ? saved : "";
@@ -173,7 +186,7 @@ export default function Home() {
   const [nameDraft, setNameDraft] = useState(studentName);
   const [editingName, setEditingName] = useState(false);
   const [onboardingOpen, setOnboardingOpen] = useState(() => !readStudentName());
-  const [completed, setCompleted] = useState<number[]>(() => readStorage("oil-gas-completed-courses-v2", defaultCompleted));
+  const [completed, setCompleted] = useState<number[]>(readCompletedCourses);
   const [query, setQuery] = useState("");
   const [semester, setSemester] = useState("الكل");
   const [typeFilter, setTypeFilter] = useState<(typeof typeFilters)[number]>("الكل");
@@ -182,12 +195,14 @@ export default function Home() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   useEffect(() => {
-    if (studentName.trim()) localStorage.setItem("oil-gas-student-name-v2", JSON.stringify(studentName));
-    else localStorage.removeItem("oil-gas-student-name-v2");
+    if (studentName.trim()) writeStorage("oil-gas-student-name-v2", studentName.trim().slice(0, 80));
+    else {
+      try { localStorage.removeItem("oil-gas-student-name-v2"); } catch { /* storage may be unavailable */ }
+    }
   }, [studentName]);
 
   useEffect(() => {
-    localStorage.setItem("oil-gas-completed-courses-v2", JSON.stringify(completed));
+    writeStorage("oil-gas-completed-courses-v2", completed);
   }, [completed]);
   useEffect(() => {
     const restoreAfterPrint = () => document.body.classList.remove("printing-report");
@@ -224,7 +239,7 @@ export default function Home() {
   }
 
   function saveName() {
-    const trimmedName = nameDraft.trim();
+    const trimmedName = nameDraft.trim().replace(/[\u0000-\u001F\u007F]/g, "").slice(0, 80);
     if (!trimmedName && onboardingOpen) {
       toast.error("اكتب اسمك أولاً للمتابعة");
       return;
@@ -370,9 +385,9 @@ export default function Home() {
         <section id="resources" className="resources-section">
           <div className="section-heading"><div><span className="section-kicker">03 · بوابتك إلى الجامعة</span><h2>روابط مهمة وأدوات سريعة</h2><p>كل ما تحتاجه لتبقى قريباً من خطتك ومصادرك.</p></div></div>
           <div className="resource-grid">
-            <a className="resource-card" href="https://portal.esems.zu.edu.ly/student-portal/study-student/auth/login" target="_blank" rel="noreferrer"><span className="resource-icon cyan"><Link2 size={20} /></span><span><strong>منظومة الطالب</strong><small>الدخول إلى النظام الأكاديمي</small></span><ExternalLink size={16} /></a>
-            <a className="resource-card" href="https://i.ibb.co/NFzDxmw/petrophysics.png" target="_blank" rel="noreferrer"><span className="resource-icon gold"><Map size={20} /></span><span><strong>خريطة المواد</strong><small>استعرض الخطة الدراسية كاملة</small></span><ExternalLink size={16} /></a>
-            <a className="resource-card" href="https://www.facebook.com/share/1By4abMfmT/" target="_blank" rel="noreferrer"><span className="resource-icon purple"><GraduationCap size={20} /></span><span><strong>عن الكلية والقسم</strong><small>صفحة الكلية على Facebook</small></span><ExternalLink size={16} /></a>
+            <a className="resource-card" href="https://portal.esems.zu.edu.ly/student-portal/study-student/auth/login" target="_blank" rel="noopener noreferrer"><span className="resource-icon cyan"><Link2 size={20} /></span><span><strong>منظومة الطالب</strong><small>الدخول إلى النظام الأكاديمي</small></span><ExternalLink size={16} /></a>
+            <a className="resource-card" href="https://i.ibb.co/NFzDxmw/petrophysics.png" target="_blank" rel="noopener noreferrer"><span className="resource-icon gold"><Map size={20} /></span><span><strong>خريطة المواد</strong><small>استعرض الخطة الدراسية كاملة</small></span><ExternalLink size={16} /></a>
+            <a className="resource-card" href="https://www.facebook.com/share/1By4abMfmT/" target="_blank" rel="noopener noreferrer"><span className="resource-icon purple"><GraduationCap size={20} /></span><span><strong>عن الكلية والقسم</strong><small>صفحة الكلية على Facebook</small></span><ExternalLink size={16} /></a>
             <button className="resource-card reset-card" onClick={resetProgress}><span className="resource-icon red"><RotateCcw size={20} /></span><span><strong>إعادة ضبط التقدم</strong><small>مسح المواد المنجزة والبدء من جديد</small></span><RotateCcw size={16} /></button>
           </div>
         </section>
