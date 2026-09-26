@@ -379,6 +379,10 @@ h2 { margin-top: 4px; font-family: "Changa", sans-serif; font-size: 23px; line-h
 @keyframes menu-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
 .print-report { display: none; }
+.exporting-pdf { background: #fff !important; }
+.exporting-pdf .app-shell { background: #fff !important; }
+.exporting-pdf .app-shell > :not(.print-report) { display: none !important; }
+.exporting-pdf .print-report { display: block !important; color: #17202a !important; }
 .report-header, .report-student, .report-summary, .report-section-title, .report-footer { display: flex; align-items: center; justify-content: space-between; }
 .report-header { padding-bottom: 14px; border-bottom: 3px solid #f5b301; }
 .report-brand { display: flex; align-items: center; gap: 10px; }

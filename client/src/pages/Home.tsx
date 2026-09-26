@@ -24,7 +24,8 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
-
+// @ts-ignore html2pdf.js does not ship TypeScript declarations.
+import html2pdf from "html2pdf.js";
 type Course = {
   id: number;
   name: string;
@@ -252,6 +253,61 @@ export default function Home() {
     document.body.classList.add("printing-report");
     window.print();
   }
+  async function downloadPdf() {
+    const report = document.querySelector(".print-report") as HTMLElement | null;
+    if (!report) {
+      toast.error("تعذر تجهيز التقرير");
+      return;
+    }
+    const exportNode = report.cloneNode(true) as HTMLElement;
+    exportNode.classList.remove("print-report");
+    exportNode.style.display = "block";
+    exportNode.style.position = "absolute";
+    exportNode.style.left = "0";
+    exportNode.style.top = "0";
+    exportNode.style.zIndex = "99999";
+    exportNode.style.pointerEvents = "none";
+    exportNode.style.width = "794px";
+    exportNode.style.padding = "24px";
+    exportNode.style.background = "#ffffff";
+    exportNode.style.color = "#17202a";
+    exportNode.style.fontFamily = 'Arial, "Tahoma", sans-serif';
+    document.body.appendChild(exportNode);
+    toast.info("جارٍ تجهيز ملف PDF...");
+    try {
+      await html2pdf().set({
+        margin: 8,
+        filename: `تقرير-${displayName}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      }).from(exportNode).save();
+      toast.success("تم تنزيل تقرير PDF بنجاح");
+    } catch {
+      toast.error("تعذر إنشاء PDF. جرّب مرة أخرى");
+    } finally {
+      exportNode.remove();
+    }
+  }
+  async function downloadPdfDirect() {
+    const report = document.querySelector(".print-report") as HTMLElement | null;
+    if (!report) return;
+    const previousStyle = report.getAttribute("style");
+    document.body.classList.add("exporting-pdf");
+    Object.assign(report.style, { display: "block", position: "relative", left: "auto", top: "auto", width: "100%", padding: "24px", background: "#fff", color: "#17202a" });
+    toast.info("جارٍ تجهيز ملف PDF...");
+    try {
+      await new Promise((resolve) => window.setTimeout(resolve, 120));
+      await html2pdf().set({ margin: 8, filename: `تقرير-${displayName}.pdf`, image: { type: "jpeg", quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" }, jsPDF: { unit: "mm", format: "a4", orientation: "portrait" } }).from(report).save();
+      toast.success("تم تنزيل تقرير PDF بنجاح");
+    } catch {
+      toast.error("تعذر إنشاء PDF. جرّب مرة أخرى");
+    } finally {
+      document.body.classList.remove("exporting-pdf");
+      if (previousStyle === null) report.removeAttribute("style");
+      else report.setAttribute("style", previousStyle);
+    }
+  }
 
   return (
     <div className="app-shell" dir="rtl">
@@ -273,7 +329,7 @@ export default function Home() {
           <button className="icon-button menu-button" aria-label="فتح القائمة" onClick={() => setShowMobileMenu((current) => !current)}>
             {showMobileMenu ? <X size={20} /> : <Menu size={20} />}
           </button>
-          <button className="ghost-button print-hide" onClick={printReportDirect}><Printer size={17} /> <span>تقرير PDF</span></button>
+          <button className="ghost-button print-hide" onClick={downloadPdfDirect}><Printer size={17} /> <span>تقرير PDF</span></button>
         </div>
       </header>
 
@@ -369,7 +425,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="footer print-hide"><span><span className="footer-mark"><Fuel size={14} /></span> بوابة الطالب · هندسة النفط والغاز</span><span>جامعة الزاوية · ليبيا</span><button onClick={printReportDirect}><FileText size={14} /> طباعة التقرير</button></footer>
+      <footer className="footer print-hide"><span><span className="footer-mark"><Fuel size={14} /></span> بوابة الطالب · هندسة النفط والغاز</span><span>جامعة الزاوية · ليبيا</span><button onClick={downloadPdfDirect}><FileText size={14} /> تحميل التقرير PDF</button></footer>
 
       <section className="print-report" aria-label="التقرير الأكاديمي للطباعة">
         <header className="report-header">
