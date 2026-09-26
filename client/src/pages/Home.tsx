@@ -163,9 +163,10 @@ function StatCard({ label, value, caption, tone, icon }: { label: string; value:
 }
 
 export default function Home() {
-  const [studentName, setStudentName] = useState(() => readStorage("oil-gas-student-name", "مهندس مستجد"));
+  const [studentName, setStudentName] = useState(() => readStorage("oil-gas-student-name", ""));
   const [nameDraft, setNameDraft] = useState(studentName);
   const [editingName, setEditingName] = useState(false);
+  const [onboardingOpen, setOnboardingOpen] = useState(() => !localStorage.getItem("oil-gas-student-name"));
   const [completed, setCompleted] = useState<number[]>(() => readStorage("oil-gas-completed-courses", defaultCompleted));
   const [query, setQuery] = useState("");
   const [semester, setSemester] = useState("الكل");
@@ -173,7 +174,8 @@ export default function Home() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem("oil-gas-student-name", JSON.stringify(studentName));
+    if (studentName.trim()) localStorage.setItem("oil-gas-student-name", JSON.stringify(studentName));
+    else localStorage.removeItem("oil-gas-student-name");
   }, [studentName]);
 
   useEffect(() => {
@@ -184,7 +186,8 @@ export default function Home() {
   const completedCredits = completedCourses.reduce((sum, course) => sum + course.credits, 0);
   const remainingCredits = TOTAL_CREDITS - completedCredits;
   const percentage = Math.round((completedCredits / TOTAL_CREDITS) * 100);
-  const remainingCourses = courses.length - completedCourses.length;
+  const displayName = studentName || "مهندس مستجد";
+  const remainingCourseList = courses.filter((course) => !completed.includes(course.id));
   const filteredCourses = useMemo(
     () =>
       courses.filter((course) => {
@@ -201,10 +204,16 @@ export default function Home() {
   }
 
   function saveName() {
-    const nextName = nameDraft.trim() || "مهندس مستجد";
+    const trimmedName = nameDraft.trim();
+    if (!trimmedName && onboardingOpen) {
+      toast.error("اكتب اسمك أولاً للمتابعة");
+      return;
+    }
+    const nextName = trimmedName || "مهندس مستجد";
     setStudentName(nextName);
     setNameDraft(nextName);
     setEditingName(false);
+    setOnboardingOpen(false);
     toast.success("تم تحديث اسم الطالب");
   }
 
@@ -260,7 +269,7 @@ export default function Home() {
                     <button onClick={() => { setNameDraft(studentName); setEditingName(false); }} aria-label="إلغاء"><X size={16} /></button>
                   </div>
                 ) : (
-                  <div className="name-line"><strong>{studentName}</strong><button className="edit-name" onClick={() => setEditingName(true)} aria-label="تعديل اسم الطالب"><Pencil size={14} /></button></div>
+                  <div className="name-line"><strong>{displayName}</strong><button className="edit-name" onClick={() => { setNameDraft(displayName); setEditingName(true); }} aria-label="تعديل اسم الطالب"><Pencil size={14} /></button></div>
                 )}
                 <span className="student-badge">مهندس مستجد <span>🛠️</span></span>
               </div>
@@ -337,6 +346,43 @@ export default function Home() {
       </main>
 
       <footer className="footer print-hide"><span><span className="footer-mark"><Fuel size={14} /></span> بوابة الطالب · هندسة النفط والغاز</span><span>جامعة الزاوية · ليبيا</span><button onClick={printReport}><FileText size={14} /> طباعة التقرير</button></footer>
+
+      <section className="print-report" aria-label="التقرير الأكاديمي للطباعة">
+        <header className="report-header">
+          <div className="report-brand"><span className="report-logo"><Fuel size={25} /></span><div><strong>جامعة الزاوية</strong><small>كلية الهندسة · قسم هندسة النفط والغاز</small></div></div>
+          <div className="report-title"><span>التقرير الأكاديمي</span><strong>سجل التقدم نحو التخرج</strong></div>
+        </header>
+        <div className="report-student"><span>اسم الطالب</span><strong>{displayName}</strong><span>تاريخ الإصدار</span><strong>{new Intl.DateTimeFormat("ar-LY", { dateStyle: "long" }).format(new Date())}</strong></div>
+        <div className="report-summary"><div><span>نسبة الإنجاز</span><strong>{percentage}%</strong></div><div><span>الوحدات المنجزة</span><strong>{completedCredits} / {TOTAL_CREDITS}</strong></div><div><span>المواد المكتملة</span><strong>{completedCourses.length} / {courses.length}</strong></div></div>
+        <ReportTable title="المواد المنجزة" items={completedCourses} totalCredits={completedCredits} done />
+        <ReportTable title="المواد المتبقية" items={remainingCourseList} totalCredits={remainingCredits} />
+        <footer className="report-footer"><span>بوابة الطالب · جامعة الزاوية</span><span>هندسة النفط والغاز · {percentage}% إنجاز</span></footer>
+      </section>
+
+      {onboardingOpen && (
+        <div className="onboarding-backdrop" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+          <div className="onboarding-modal">
+            <div className="onboarding-glow" aria-hidden="true" />
+            <span className="onboarding-logo"><Fuel size={28} /></span>
+            <span className="onboarding-kicker">أهلاً بك في رحلتك</span>
+            <h2 id="welcome-title">جاهز تبدأ<br /><em>مسارك نحو التخرج؟</em></h2>
+            <p>خلّينا نعرف اسمك حتى نجهّز لك لوحة تقدم شخصية ومحفوظة على جهازك.</p>
+            <label className="onboarding-label" htmlFor="onboarding-name">اسم الطالب</label>
+            <input id="onboarding-name" className="onboarding-input" autoFocus value={nameDraft} onChange={(event) => setNameDraft(event.target.value)} onKeyDown={(event) => event.key === "Enter" && saveName()} placeholder="اكتب اسمك هنا" />
+            <button className="primary-button" onClick={saveName}>ابدأ رحلتي <ArrowUpLeft size={18} /></button>
+            <small className="onboarding-note"><span /> يُحفظ اسمك محلياً على هذا الجهاز فقط</small>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+function ReportTable({ title, items, totalCredits, done = false }: { title: string; items: Course[]; totalCredits: number; done?: boolean }) {
+  return (
+    <section className="report-table-section">
+      <div className="report-section-title"><h2>{title}</h2><span className={done ? "report-done" : "report-remaining"}>{items.length} مادة · {totalCredits} وحدة</span></div>
+      <table><thead><tr><th>المادة</th><th>الرمز</th><th>الفصل</th><th>النوع</th><th>الوحدات</th></tr></thead><tbody>{items.length ? items.map((course) => <tr key={course.id}><td>{course.name}</td><td dir="ltr">{course.code}</td><td>{course.semester}</td><td>{course.type}</td><td>{course.credits}</td></tr>) : <tr><td colSpan={5}>لا توجد مواد في هذه القائمة</td></tr>}</tbody></table>
+    </section>
   );
 }
