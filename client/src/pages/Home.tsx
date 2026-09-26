@@ -171,6 +171,7 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [semester, setSemester] = useState("الكل");
   const [typeFilter, setTypeFilter] = useState<(typeof typeFilters)[number]>("الكل");
+  const [openFilter, setOpenFilter] = useState<"semester" | "type" | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   useEffect(() => {
@@ -225,8 +226,19 @@ export default function Home() {
   }
 
   function printReport() {
-    toast.success("التقرير جاهز للطباعة أو الحفظ كملف PDF");
-    window.setTimeout(() => window.print(), 180);
+    const report = document.querySelector(".print-report");
+    if (!report) return;
+    const reportWindow = window.open("", "_blank", "width=960,height=760");
+    if (!reportWindow) {
+      toast.error("تعذر فتح التقرير. اسمح بالنوافذ المنبثقة ثم حاول مرة أخرى.");
+      return;
+    }
+    reportWindow.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="UTF-8" /><title>التقرير الأكاديمي - ${displayName}</title><style>
+      @page{size:A4;margin:14mm}*{box-sizing:border-box}body{margin:0;color:#17202a;font-family:Arial,"Tahoma",sans-serif;font-size:11px}h2{margin:0;font-size:15px}.report-header,.report-student,.report-summary,.report-section-title,.report-footer{display:flex;align-items:center;justify-content:space-between}.report-header{padding-bottom:14px;border-bottom:3px solid #f5b301}.report-brand{display:flex;align-items:center;gap:10px}.report-logo{width:48px;height:48px;display:grid;place-items:center;color:#fff;border-radius:12px;background:#f5b301}.report-brand strong,.report-brand small,.report-title span,.report-title strong{display:block}.report-brand strong{font-size:18px}.report-brand small{margin-top:2px;color:#5c6b7a;font-size:10px}.report-title{text-align:left}.report-title span{color:#986d00;font-size:11px}.report-title strong{margin-top:2px;font-size:16px}.report-student{gap:8px;margin-top:18px;padding:11px 13px;border:1px solid #dfe3e7;background:#fafbfc;font-size:10px}.report-student span{color:#5c6b7a}.report-student strong{margin-left:auto}.report-summary{justify-content:flex-start;gap:8px;margin:14px 0 20px}.report-summary div{min-width:150px;padding:9px 12px;border-right:3px solid #f5b301;background:#fafbfc}.report-summary span,.report-summary strong{display:block}.report-summary span{color:#5c6b7a;font-size:9px}.report-summary strong{margin-top:2px;font-size:17px}.report-table-section{margin-top:19px;break-inside:avoid}.report-section-title{margin-bottom:7px}.report-section-title span{font-size:9px}.report-done{color:#238c50}.report-remaining{color:#986d00}table{width:100%;border-collapse:collapse;font-size:9px}th{padding:6px 8px;color:#5c6b7a;border-bottom:1px solid #b9c2cb;background:#f1f4f6;text-align:right}td{padding:5px 8px;border-bottom:1px solid #e5e8eb}tbody tr:nth-child(even){background:#fafbfc}.report-footer{margin-top:24px;padding-top:9px;color:#5c6b7a;border-top:1px solid #dfe3e7;font-size:9px}.print-actions{display:flex;gap:8px;margin-top:24px}@media print{.print-actions{display:none}}
+    </style></head><body>${report.innerHTML}<div class="print-actions"><button onclick="window.print()">طباعة / حفظ PDF</button><button onclick="window.close()">إغلاق</button></div></body></html>`);
+    reportWindow.document.close();
+    reportWindow.focus();
+    toast.success("تم فتح التقرير. اختر طباعة ثم حفظ كـ PDF");
   }
 
   return (
@@ -309,8 +321,8 @@ export default function Home() {
           <div className="course-toolbar card-surface">
             <div className="search-field"><Search size={18} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ابحث باسم المادة أو رمزها..." aria-label="البحث في المواد" />{query && <button onClick={() => setQuery("")} aria-label="مسح البحث"><X size={15} /></button>}</div>
             <div className="toolbar-selects">
-              <label><span>الفصل</span><div className="select-wrap"><select value={semester} onChange={(event) => setSemester(event.target.value)} aria-label="تصفية حسب الفصل"><option value="الكل">كل الفصول</option>{[1, 2, 3, 4, 5, 6, 7, 8].map((item) => <option key={item} value={item}>الفصل {item}</option>)}</select><ChevronDown size={15} /></div></label>
-              <label><span>نوع المادة</span><div className="select-wrap"><select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value as (typeof typeFilters)[number])} aria-label="تصفية حسب النوع">{typeFilters.map((item) => <option key={item} value={item}>{item === "الكل" ? "كل الأنواع" : item}</option>)}</select><ChevronDown size={15} /></div></label>
+              <FilterDropdown label="الفصل الدراسي" value={semester === "الكل" ? "كل الفصول" : `الفصل ${semester}`} open={openFilter === "semester"} onToggle={() => setOpenFilter((current) => current === "semester" ? null : "semester")} options={[{ value: "الكل", label: "كل الفصول" }, ...[1, 2, 3, 4, 5, 6, 7, 8].map((item) => ({ value: String(item), label: `الفصل ${item}` }))]} selected={semester} onChange={(value) => { setSemester(value); setOpenFilter(null); }} />
+              <FilterDropdown label="نوع المادة" value={typeFilter === "الكل" ? "كل الأنواع" : typeFilter} open={openFilter === "type"} onToggle={() => setOpenFilter((current) => current === "type" ? null : "type")} options={typeFilters.map((item) => ({ value: item, label: item === "الكل" ? "كل الأنواع" : item }))} selected={typeFilter} onChange={(value) => { setTypeFilter(value as (typeof typeFilters)[number]); setOpenFilter(null); }} />
             </div>
           </div>
 
@@ -374,6 +386,16 @@ export default function Home() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function FilterDropdown({ label, value, options, selected, open, onToggle, onChange }: { label: string; value: string; options: { value: string; label: string }[]; selected: string; open: boolean; onToggle: () => void; onChange: (value: string) => void }) {
+  return (
+    <div className="filter-dropdown">
+      <span className="filter-label">{label}</span>
+      <button className={`filter-trigger ${open ? "is-open" : ""}`} onClick={onToggle} aria-expanded={open} aria-haspopup="listbox"><span>{value}</span><ChevronDown size={15} /></button>
+      {open && <div className="filter-menu" role="listbox" aria-label={label}>{options.map((option) => <button key={option.value} role="option" aria-selected={selected === option.value} className={selected === option.value ? "selected" : ""} onClick={() => onChange(option.value)}>{selected === option.value ? <Check size={15} /> : <span className="option-dot" />}{option.label}</button>)}</div>}
     </div>
   );
 }

@@ -365,6 +365,19 @@ h2 { margin-top: 4px; font-family: "Changa", sans-serif; font-size: 23px; line-h
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes modal-in { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
+.filter-dropdown { position: relative; min-width: 145px; }
+.filter-label { display: block; margin-bottom: 4px; color: #687586; font-size: 10px; }
+.filter-trigger { width: 100%; height: 43px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 12px; color: #d5dce5; border: 1px solid rgba(139,152,169,.16); border-radius: 11px; background: #161b22; font-size: 11px; transition: border-color .2s ease-out, background .2s ease-out; }
+.filter-trigger:hover, .filter-trigger.is-open { border-color: rgba(245,179,1,.55); background: #1c2128; }
+.filter-trigger svg { color: #f5b301; transition: transform .2s ease-out; }
+.filter-trigger.is-open svg { transform: rotate(180deg); }
+.filter-menu { position: absolute; z-index: 8; top: calc(100% + 7px); right: 0; left: 0; padding: 6px; border: 1px solid rgba(245,179,1,.25); border-radius: 13px; background: #1c2128; box-shadow: 0 18px 38px rgba(0,0,0,.35); animation: menu-in .16s var(--ease-out); }
+.filter-menu button { width: 100%; display: flex; align-items: center; gap: 8px; padding: 9px 8px; color: #a8b2c1; border-radius: 8px; background: transparent; text-align: right; font-size: 11px; }
+.filter-menu button:hover, .filter-menu button.selected { color: #ffd54f; background: rgba(245,179,1,.1); }
+.filter-menu button svg { color: #43d17a; }
+.option-dot { width: 15px; height: 15px; display: inline-block; flex: 0 0 15px; border: 1px solid #5c6b7a; border-radius: 50%; }
+@keyframes menu-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
 .print-report { display: none; }
 .report-header, .report-student, .report-summary, .report-section-title, .report-footer { display: flex; align-items: center; justify-content: space-between; }
 .report-header { padding-bottom: 14px; border-bottom: 3px solid #f5b301; }
