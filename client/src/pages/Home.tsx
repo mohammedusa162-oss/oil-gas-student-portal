@@ -94,7 +94,6 @@ const courses: Course[] = [
   { id: 55, name: "تفسير المقطعيات السيزمية – Seismic Data Interpretation", code: "GPE573", type: "إجبارية", credits: 3, semester: 7 },
   { id: 56, name: "الجيولوجيا الحقلية (مخيّم) – Field Geology", code: "GLE523", type: "إجبارية", credits: 4, semester: 7 },
   { id: 57, name: "الندوة الجيولوجية والجيوفيزيائية – Geological & Geophysical Seminar", code: "GLE522", type: "اختيارية", credits: 1, semester: 7 },
-  { id: 58, name: "مادة اختيارية 1 – Elective 1", code: "—", type: "اختيارية", credits: null, semester: 8 },
   { id: 59, name: "مشروع التخرج 1 – Graduate Project 1", code: "GLE595", type: "إجبارية", credits: 2, semester: 8 },
   { id: 60, name: "مشروع التخرج 2 – Graduate Project 2", code: "GLE599", type: "إجبارية", credits: 4, semester: 8 },
 ];
@@ -587,7 +586,7 @@ function ReportTable({ title, items, totalCredits, done = false }: { title: stri
   return (
     <section className="report-table-section">
       <div className="report-section-title"><h2>{title}</h2><span className={done ? "report-done" : "report-remaining"}>{items.length} مادة · {totalCredits} وحدة</span></div>
-      <table><thead><tr><th>المادة</th><th>الرمز</th><th>النوع</th><th>الوحدات</th></tr></thead><tbody>{items.length ? items.map((course) => <tr key={course.id}><td>{course.name}</td><td className="report-code" dir="ltr">{course.code}</td><td>{course.type}</td><td className="report-center">{course.credits ?? "—"}</td></tr>) : <tr><td colSpan={4}>لا توجد مواد في هذه القائمة</td></tr>}</tbody></table>
+      <table><thead><tr><th className="report-num">#</th><th>المادة</th><th>الرمز</th><th>الوحدات</th></tr></thead><tbody>{items.length ? items.map((course, index) => <tr key={course.id}><td className="report-center">{index + 1}</td><td>{course.name}</td><td className="report-code" dir="ltr">{course.code}</td><td className="report-center">{course.credits ?? "—"}</td></tr>) : <tr><td colSpan={4}>لا توجد مواد في هذه القائمة</td></tr>}</tbody></table>
     </section>
   );
 }
