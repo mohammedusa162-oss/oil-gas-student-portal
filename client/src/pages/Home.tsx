@@ -531,7 +531,7 @@ export default function Home() {
       {printPayload ? (
         <section className="print-report" aria-label="تقرير المواد الحالية للطباعة">
           <header className="report-header">
-            <div className="report-brand"><img className="report-university-logo" src="/university-of-zawia-logo.png" alt="شعار جامعة الزاوية" /><div><strong>كلية الهندسة</strong><small>قسم الجيولوجيا · شعبة البترفيزياء · جامعة الزاوية</small></div></div>
+            <div className="report-brand"><img className="report-university-logo" src="university-of-zawia-logo.png" alt="شعار جامعة الزاوية" /><div><strong>كلية الهندسة</strong><small>قسم الجيولوجيا · شعبة البترفيزياء · جامعة الزاوية</small></div></div>
             <div className="report-title"><span>تقرير مخصص</span><strong>المواد الحالية</strong><small>Custom Course Selection</small></div>
           </header>
           <div className="report-student"><div className="report-field"><span>اسم الطالب</span><strong>{displayName}</strong></div><div className="report-field"><span>القسم</span><strong>الجيولوجيا · شعبة البترفيزياء</strong></div><div className="report-field"><span>تاريخ الإصدار</span><strong>{new Intl.DateTimeFormat("ar-LY", { dateStyle: "long" }).format(new Date())}</strong></div></div>
@@ -542,7 +542,7 @@ export default function Home() {
       ) : (
       <section className="print-report" aria-label="التقرير الأكاديمي للطباعة">
         <header className="report-header">
-          <div className="report-brand"><img className="report-university-logo" src="/university-of-zawia-logo.png" alt="شعار جامعة الزاوية" /><div><strong>كلية الهندسة</strong><small>قسم الجيولوجيا · شعبة البترفيزياء · جامعة الزاوية</small></div></div>
+          <div className="report-brand"><img className="report-university-logo" src="university-of-zawia-logo.png" alt="شعار جامعة الزاوية" /><div><strong>كلية الهندسة</strong><small>قسم الجيولوجيا · شعبة البترفيزياء · جامعة الزاوية</small></div></div>
           <div className="report-title"><span>التقرير الأكاديمي</span><strong>سجل التقدم نحو التخرج</strong><small>Student Progress Record</small></div>
         </header>
         <div className="report-student"><div className="report-field"><span>اسم الطالب</span><strong>{displayName}</strong></div><div className="report-field"><span>القسم</span><strong>الجيولوجيا · شعبة البترفيزياء</strong></div><div className="report-field"><span>تاريخ الإصدار</span><strong>{new Intl.DateTimeFormat("ar-LY", { dateStyle: "long" }).format(new Date())}</strong></div></div>
