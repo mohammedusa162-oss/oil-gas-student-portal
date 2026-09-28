@@ -93,7 +93,7 @@ const courses: Course[] = [
   { id: 53, name: "الجيوكيمياء النفطية – Petroleum Geochemistry", code: "GLE533", type: "اختيارية", credits: 3, semester: 7 },
   { id: 54, name: "جيولوجيا البترول 2 – Petroleum Geology 2", code: "GLE555", type: "إجبارية", credits: 3, semester: 7 },
   { id: 55, name: "تفسير المقطعيات السيزمية – Seismic Data Interpretation", code: "GPE573", type: "إجبارية", credits: 3, semester: 7 },
-  { id: 56, name: "الجيولوجيا الحقلية (مخيّم) – Field Geology", code: "GLE523", type: "إجبارية", credits: 4, semester: 7 },
+  { id: 56, name: "الجيولوجيا الحقلية (مخيّم) – Field Geology", code: "GLE525", type: "إجبارية", credits: 4, semester: 7 },
   { id: 57, name: "الندوة الجيولوجية والجيوفيزيائية – Geological & Geophysical Seminar", code: "GLE522", type: "اختيارية", credits: 1, semester: 7 },
   { id: 59, name: "مشروع التخرج 1 – Graduate Project 1", code: "GLE595", type: "إجبارية", credits: 2, semester: 8 },
   { id: 60, name: "مشروع التخرج 2 – Graduate Project 2", code: "GLE599", type: "إجبارية", credits: 4, semester: 8 },
@@ -223,6 +223,19 @@ export default function Home() {
   useEffect(() => {
     writeStorage("oil-gas-completed-courses-v2", completed);
   }, [completed]);
+  useEffect(() => {
+    // Preload the Ruqaa font so it is ready inside the print dialog (its text is hidden otherwise).
+    fetch("https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap")
+      .then((response) => response.text())
+      .then((css) => {
+        const match = css.match(/url\((https:[^)]+\.woff2)\)/);
+        if (match) {
+          const ruqaa = new FontFace("Aref Ruqaa", `url(${match[1]})`);
+          ruqaa.load().then((loaded) => document.fonts.add(loaded)).catch(() => { /* fallback font stays in use */ });
+        }
+      })
+      .catch(() => { /* offline: fallback font stays in use */ });
+  }, []);
   useEffect(() => {
     writeStorage("oil-gas-pdf-selection-v1", pdfSelection);
   }, [pdfSelection]);
