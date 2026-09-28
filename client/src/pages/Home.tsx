@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { motivationalMessages } from "@/motivational-messages";
 import {
   ArrowUpLeft,
   BookOpen,
@@ -124,6 +125,10 @@ function readCompletedCourses(): number[] {
   const validIds = new Set(courses.map((course) => course.id));
   return saved.filter((id): id is number => typeof id === "number" && Number.isInteger(id) && validIds.has(id)).filter((id, index, ids) => ids.indexOf(id) === index);
 }
+function pickMotivation(): string {
+  return motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)] ?? motivationalMessages[0];
+}
+
 function readStudentName() {
   const saved = readStorage<string | null>("oil-gas-student-name-v2", null);
   return saved && !["محمد حسن", "Mohammed Hassan", "محمد الرواب"].includes(saved.trim()) ? saved : "";
@@ -206,6 +211,7 @@ export default function Home() {
   const [pdfQuery, setPdfQuery] = useState("");
   const [pdfScope, setPdfScope] = useState<"all" | "current">("all");
   const [printPayload, setPrintPayload] = useState<Course[] | null>(null);
+  const [motivationMessage, setMotivationMessage] = useState(pickMotivation);
 
   useEffect(() => {
     if (studentName.trim()) writeStorage("oil-gas-student-name-v2", studentName.trim().slice(0, 80));
@@ -309,6 +315,7 @@ export default function Home() {
     const payload = courses
       .filter((course) => pdfSelection.includes(course.id))
       .sort((a, b) => a.semester - b.semester || a.id - b.id);
+    setMotivationMessage(pickMotivation());
     setPrintPayload(payload);
     window.setTimeout(() => {
       document.body.classList.add("printing-report");
@@ -347,6 +354,7 @@ export default function Home() {
       toast.error("تعذر تجهيز التقرير");
       return;
     }
+    setMotivationMessage(pickMotivation());
     const previousStyle = report.getAttribute("style");
     document.body.classList.add("printing-report");
     Object.assign(report.style, { display: "block", position: "static", width: "100%", padding: "0", margin: "0", background: "#fff", color: "#17202a" });
@@ -538,6 +546,7 @@ export default function Home() {
           <div className="report-summary"><div><span>عدد المواد الحالية</span><strong>{printPayload.length}</strong></div><div><span>إجمالي الوحدات</span><strong>{printPayload.reduce((sum, course) => sum + (course.credits ?? 0), 0)}</strong></div><div><span>عدد الوحدات الكلية للطالب</span><strong>{completedCredits + printPayload.reduce((sum, course) => sum + (course.credits ?? 0), 0)}</strong></div></div>
           <ReportTable title={`المواد الحالية · ${printPayload.length} مادة`} items={printPayload} totalCredits={printPayload.reduce((sum, course) => sum + (course.credits ?? 0), 0)} done />
           <footer className="report-footer"><span>بوابة الطالب · جامعة الزاوية</span><span>مواد الفصل الحالي · {printPayload.length} مادة</span></footer>
+          <div className="report-motivation"><span className="report-motivation-mark">❞</span>{motivationMessage}<span className="report-motivation-mark">❝</span></div>
         </section>
       ) : (
       <section className="print-report" aria-label="التقرير الأكاديمي للطباعة">
@@ -550,6 +559,7 @@ export default function Home() {
         <ReportTable title={`المواد المنجزة${reportSemester === "الكل" ? "" : ` · الفصل ${reportSemester}`}`} items={reportCompletedCourses} totalCredits={reportCompletedCredits} done />
         <ReportTable title={`المواد المتبقية${reportSemester === "الكل" ? "" : ` · الفصل ${reportSemester}`}`} items={reportRemainingCourses} totalCredits={reportRemainingCredits} />
         <footer className="report-footer"><span>بوابة الطالب · جامعة الزاوية</span><span>الجيولوجيا · شعبة البترفيزياء · {reportPercentage}% إنجاز</span></footer>
+        <div className="report-motivation"><span className="report-motivation-mark">❞</span>{motivationMessage}<span className="report-motivation-mark">❝</span></div>
       </section>
       )}
 

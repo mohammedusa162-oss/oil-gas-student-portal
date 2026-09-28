@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Changa:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Changa:wght@500;600;700;800&family=Aref+Ruqaa:wght@400;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -429,6 +429,8 @@ h2 { margin-top: 4px; font-family: "Changa", sans-serif; font-size: 23px; line-h
 .report-table-section td:nth-child(2) { font-weight: 600; font-size: 13.5px; }
 .report-table-section tbody tr:nth-child(even) { background: #fafbfc; }
 .report-footer { margin-top: 25px; padding-top: 10px; color: #73808a; border-top: 1px solid #dfe3e7; font-family: "Cairo", sans-serif; font-size: 11px; }
+.report-motivation { margin: 18px auto 0; max-width: 88%; padding: 10px 16px 8px; text-align: center; color: #6d5a1e; font-family: "Aref Ruqaa", "Cairo", serif; font-size: 16px; line-height: 1.9; border-top: 1px dashed #e0c977; break-inside: avoid; }
+.report-motivation-mark { color: #c9a227; font-size: 14px; margin: 0 5px; }
 @media print {
   @page { size: A4 portrait; margin: 12mm 13mm; }
   body { background: #fff !important; }
