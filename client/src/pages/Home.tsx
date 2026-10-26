@@ -64,6 +64,7 @@ const courses: Course[] = [
   { id: 18, name: "كيمياء فيزيائية – Physical Chemistry", code: "GHE 211", type: "إجبارية", credits: 3, semester: 3, prerequisite: "كيمياء عامة" },
   { id: 19, name: "فيزياء معمل – Physics Lab", code: "GS 112L", type: "إجبارية", credits: 1, semester: 3, prerequisite: "فيزياء 2" },
   { id: 20, name: "اسس هـ .كهربائية – Fundamental of Electrical Engineering", code: "GE 280", type: "إجبارية", credits: 3, semester: 3, prerequisite: "فيزياء 2" },
+  { id: 58, name: "ثقافة إسلامية – Islamic Culture", code: "—", type: "جامعة", credits: 2, semester: 3, prerequisite: "لا يوجد" },
 
   // الفصل الدراسي الرابع
   { id: 21, name: "رياضة 4 – Mathematics 4", code: "GS 204", type: "إجبارية", credits: 3, semester: 4, prerequisite: "رياضة 3" },
@@ -498,7 +499,7 @@ export default function Home() {
                   <span className="course-main">
                     <strong>{course.name}</strong>
                     <small>
-                      {course.code}
+                      {course.code && course.code !== "—" ? course.code : "بدون رمز"}
                       {course.prerequisite && course.prerequisite !== "لا يوجد" && course.prerequisite !== "******"
                         ? ` · المتطلب: ${course.prerequisite}`
                         : " · بدون متطلب سابق"}
