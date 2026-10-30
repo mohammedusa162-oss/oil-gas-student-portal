@@ -11,7 +11,7 @@ const SHELL = [
   "./icon-512.png",
   "./icon-maskable-512.png",
   "./university-of-zawia-logo.png",
-  "./privacy.html",
+  "./privacy-policy.html",
   // الخطوط والملفات ذات المسار الثابت — التغليف نفسه لا يحتاج شبكة.
   "./fonts/aref-ruqaa-400.ttf",
   "./fonts/aref-ruqaa-700.ttf",

@@ -77,7 +77,7 @@
 | أيقونة 512×512 | `store-assets/icon-512.png` |
 | صورة عرضية 1024×500 | `store-assets/feature-graphic-1024x500.png` |
 | لقطات شاشة | `store-assets/screenshots/` (3 لقطات بنسبة 9:16) |
-| سياسة الخصوصية | `https://mohammedusa162-oss.github.io/oil-gas-student-portal/privacy.html` (بعد دفع التعديلات إلى GitHub) |
+| سياسة الخصوصية | `https://mohammedusa162-oss.github.io/oil-gas-student-portal/privacy-policy.html` (منشورة) |
 | حزمة الرفع | `android/app/build/outputs/bundle/release/app-release.aab` |
 
 ## 10) سؤال «إمكانية الوصول إلى التطبيق» (App access)

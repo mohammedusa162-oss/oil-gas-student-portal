@@ -40,7 +40,7 @@
 | `android/` | جديد | مشروع Android (Capacitor 8) |
 | `client/src/pages/Home.tsx` | تحميل خط Ruqaa محلياً بدل Google Fonts | طباعة تعمل دون إنترنت + لا اتصال بطرف ثالث |
 | `client/public/fonts/*.ttf` | جديد (ملفان) | الخط محلياً (SIL OFL) |
-| `client/public/privacy.html` | جديد | سياسة الخصوصية (تُنشر مع Pages) |
+| `client/public/privacy-policy.html` | سياسة الخصوصية (تنشر مع Pages) |
 | `scripts/make-android-icons.cjs` | جديد | أيقونات/بداية/أصول المتجر بهوية التطبيق |
 | `.gitignore` | إضافة قواعد Android | منع رفع المفتاح والبناء |
 | `android/gradle.properties` | `android.overridePathCheck=true` | مسار المشروع يحوي حروفاً عربية |

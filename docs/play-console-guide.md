@@ -12,9 +12,9 @@
 | `store-assets/icon-512.png` · `store-assets/feature-graphic-1024x500.png` | أصول المتجر |
 | `store-assets/screenshots/` | 3 لقطات 9:16 |
 | `store-assets/play-listing.md` | نصوص اللائحة + إجابات أمان البيانات |
-| `client/public/privacy.html` | سياسة الخصوصية (تنشر مع GitHub Pages) |
+| `client/public/privacy-policy.html` | سياسة الخصوصية (تنشر مع GitHub Pages) |
 
-تحقّقتُ بالفحص: `targetSdkVersion=36` و`platformBuildVersion=36`، الاسم `com.mohammedusa162.oilgasportal`، والشهادة `CN=Mohammed … C=LY` بصمة `SHA256: 81:23:9A:…`، والخطوط و`privacy.html` داخل الحزمة، وبلا أي مكوّن تتبّع.
+تحقّقتُ بالفحص: `targetSdkVersion=36` و`platformBuildVersion=36`، الاسم `com.mohammedusa162.oilgasportal`، والشهادة `CN=Mohammed … C=LY` بصمة `SHA256: 81:23:9A:…`، والخطوط و`privacy-policy.html` داخل الحزمة، وبلا أي مكوّن تتبّع.
 
 ## ما يجب عليك أنت (لا يمكن لأي أداة تنفيذه)
 
@@ -27,7 +27,7 @@
 1. **Create app** → الاسم والوصف من `store-assets/play-listing.md`.
 2. ارفع الأيقونة والصورة العرضية واللقطات.
 3. **Privacy policy**: ادفع تعديلات المشروع إلى GitHub حتى تُنشر الصفحة على Pages، ثم ضع الرابط:
-   `https://mohammedusa162-oss.github.io/oil-gas-student-portal/privacy.html`
+   `https://mohammedusa162-oss.github.io/oil-gas-student-portal/privacy-policy.html`
 4. **Data safety**: «لا يجمع ولا يشارك أي بيانات» — صحيح تقنياً بعد إزالة اتصال Google Fonts.
 5. **Content rating** → Everyone · **Target audience** → 13+.
 6. **App signing by Google Play**: فعّله، وارفع بمفتاحك المحلي.
