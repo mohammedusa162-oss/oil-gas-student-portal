@@ -356,4 +356,11 @@ written += write(
   encodePng(featureGraphic(1024, 500)),
 );
 
-console.log('كُتبت ' + written + ' بايت من الأصول إلى ' + RES + ' و' + STORE);
+// أيقونات PWA لملف manifest — تثبيت التطبيق من المتصفح على الهاتف دون حساب Google
+const PWA_DIR = path.join(ROOT, 'client', 'public');
+written += write(path.join(PWA_DIR, 'icon-192.png'), encodePng(downsample(rounded, 192)));
+written += write(path.join(PWA_DIR, 'icon-512.png'), encodePng(downsample(rounded, 512)));
+// أيقونة قناع: خلفية ملء المربع والرسم داخل المنطقة الآمنة.
+written += write(path.join(PWA_DIR, 'icon-maskable-512.png'), encodePng(downsample(iconCanvas('square'), 512)));
+
+console.log('كُتبت ' + written + ' بايت من الأصول إلى ' + RES + ' و' + STORE + ' و' + PWA_DIR);
