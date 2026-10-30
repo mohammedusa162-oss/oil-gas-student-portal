@@ -246,16 +246,20 @@ export default function Home() {
   }, [completed]);
   useEffect(() => {
     // Preload the Ruqaa font so it is ready inside the print dialog (its text is hidden otherwise).
-    fetch("https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap")
-      .then((response) => response.text())
-      .then((css) => {
-        const match = css.match(/url\((https:[^)]+\.woff2)\)/);
-        if (match) {
-          const ruqaa = new FontFace("Aref Ruqaa", `url(${match[1]})`);
-          ruqaa.load().then((loaded) => document.fonts.add(loaded)).catch(() => { /* fallback font stays in use */ });
-        }
-      })
-      .catch(() => { /* offline: fallback font stays in use */ });
+    // الخط محلي داخل التطبيق (public/fonts) حتى تعمل الطباعة دون إنترنت وبلا اتصال بـ Google.
+    const baseUrl = import.meta.env.BASE_URL || "/";
+    const faces = [
+      { file: `${baseUrl}fonts/aref-ruqaa-400.ttf`, weight: "400" },
+      { file: `${baseUrl}fonts/aref-ruqaa-700.ttf`, weight: "700" },
+    ];
+    faces.forEach((face) => {
+      try {
+        const font = new FontFace("Aref Ruqaa", `url(${face.file})`, { weight: face.weight });
+        font.load()
+          .then((loaded) => document.fonts.add(loaded))
+          .catch(() => { /* fallback font stays in use */ });
+      } catch { /* fallback font stays in use */ }
+    });
   }, []);
   useEffect(() => {
     writeStorage("oil-gas-pdf-selection-v1", pdfSelection);

@@ -1,0 +1,15 @@
+{
+  "appId": "com.mohammedusa162.oilgasportal",
+  "appName": "بوابة الطالب",
+  "webDir": "dist/public",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false,
+    "backgroundColor": "#0d1117"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
