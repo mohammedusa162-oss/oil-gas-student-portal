@@ -97,12 +97,14 @@ const courses: Course[] = [
   { id: 42, name: "جيو هندسية – Geo-Engineering", code: "GLE 413", type: "إجبارية", credits: 3, semester: 7, prerequisite: "ميكانيكا صخور + ميكانيكا تربة + الاستشعار عن بعد" },
   { id: 43, name: "خواص صخور المكمن – Reservoir rock properties", code: "PTE 353", type: "إجبارية", credits: 3, semester: 7, prerequisite: "علم الطبقات + الرسوبيات + جيولوجيا نفط 1" },
   { id: 44, name: "علم المياه – Hydrology", code: "GLE 426", type: "إجبارية", credits: 3, semester: 7, prerequisite: "علم الطبقات + ميكانيكا موائع" },
+  { id: 60, name: "إدارة المشاريع – Projects Management", code: "GLE 425", type: "إجبارية", credits: 2, semester: 7, prerequisite: "لا يوجد" },
 
   // الفصل الدراسي الثامن (تم استبعاد تكرار خواص صخور المكمن)
   { id: 45, name: "الاشعة السينية – X-Ray", code: "GLE 411", type: "إجبارية", credits: 3, semester: 8, prerequisite: "صخور ومعادن+ الجيوكيمياء" },
   { id: 46, name: "الجيولوجيا الاقتصادية – Economic Geology", code: "GLE 412", type: "إجبارية", credits: 3, semester: 8, prerequisite: "علم الطبقات + الاشعة السينية" },
   { id: 47, name: "تطبيقات الحاسب في الجيولوجيا والجيوفيزياء – Computer Application in Geology & Geophysical", code: "GLE 415", type: "إجبارية", credits: 3, semester: 8, prerequisite: "برمجة + تحليل عددي" },
   { id: 48, name: "تقييم تكوينات – Formation Evaluation", code: "GLE 513", type: "إجبارية", credits: 3, semester: 8, prerequisite: "تسجيلات أبار 1" },
+  { id: 59, name: "الجيولوجيا تحت السطحية – Subsurface Geology", code: "GLE 423", type: "إجبارية", credits: 3, semester: 8, prerequisite: "علم الطبقات + جيولوجيا نفط 1" },
 
   // الفصل الدراسي التاسع
   { id: 49, name: "جيولوجيا نفط 2 – Petroleum Geology II", code: "GLE 555", type: "إجبارية", credits: 3, semester: 9, prerequisite: "جيولوجيا نفط 1" },
@@ -265,9 +267,23 @@ export default function Home() {
     writeStorage("oil-gas-pdf-selection-v1", pdfSelection);
   }, [pdfSelection]);
   useEffect(() => {
-    const restoreAfterPrint = () => document.body.classList.remove("printing-report");
+    const restoreAfterPrint = () => {
+      document.body.classList.remove("printing-report");
+      setPrintPayload(null);
+    };
     window.addEventListener("afterprint", restoreAfterPrint);
-    return () => window.removeEventListener("afterprint", restoreAfterPrint);
+    window.addEventListener("focus", restoreAfterPrint);
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") {
+        window.setTimeout(restoreAfterPrint, 600);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("afterprint", restoreAfterPrint);
+      window.removeEventListener("focus", restoreAfterPrint);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   const completedCourses = useMemo(() => courses.filter((course) => completed.includes(course.id)), [completed]);
@@ -293,10 +309,40 @@ export default function Home() {
       }),
     [query, semester, typeFilter],
   );
+  const activeSemester = useMemo(() => {
+    if (semester !== "الكل" && semester !== "0") {
+      const s = Number(semester);
+      if (!isNaN(s)) return s;
+    }
+    let maxDoneSem = 0;
+    courses.forEach((c) => {
+      if (completed.includes(c.id) && c.semester > maxDoneSem) {
+        maxDoneSem = c.semester;
+      }
+    });
+    if (maxDoneSem > 0 && maxDoneSem < 10) {
+      return maxDoneSem + 1;
+    }
+    for (let s = 1; s <= 10; s++) {
+      const semCourses = courses.filter((c) => c.semester === s);
+      if (semCourses.length > 0 && semCourses.some((c) => !completed.includes(c.id))) {
+        return s;
+      }
+    }
+    return 7;
+  }, [semester, completed]);
+
   const pdfFilteredCourses = useMemo(() => {
-    const scopeCourses = pdfScope === "current" ? remainingCourseList : courses;
+    let scopeCourses = courses;
+    if (pdfScope === "current") {
+      // فقط المواد التي لم يصفّيها الطالب بعد (غير المنجزة) حتى الفصل الحالي
+      // والمواد التي صفاها الطالب تختفي تلقائياً، ولا تظهر مواد الفصول القادمة
+      scopeCourses = courses.filter(
+        (c) => c.semester > 0 && c.semester <= activeSemester && !completed.includes(c.id)
+      );
+    }
     return scopeCourses.filter((course) => `${course.name} ${course.code} ${course.prerequisite ?? ""}`.toLowerCase().includes(pdfQuery.toLowerCase()));
-  }, [pdfQuery, pdfScope, remainingCourseList]);
+  }, [pdfQuery, pdfScope, activeSemester, completed]);
   const pdfSelectedCourses = useMemo(() => courses.filter((course) => pdfSelection.includes(course.id)), [pdfSelection]);
   const pdfSelectedCredits = pdfSelectedCourses.reduce((sum, course) => sum + (course.credits ?? 0), 0);
 
@@ -344,6 +390,24 @@ export default function Home() {
     setPdfSelection([]);
   }
 
+
+  function triggerPrint(reportName: string = "تقرير_بوابة_الطالب") {
+    const native = (window as any).AndroidNative || (window as any).AndroidBridge;
+    if (native && typeof native.print === "function") {
+      toast.info("جاري فتح نافذة الطباعة / الحفظ PDF...");
+      native.print(reportName);
+    } else {
+      window.print();
+    }
+  }
+
+  function handleExternalLink(e: React.MouseEvent<HTMLAnchorElement>, url: string) {
+    const native = (window as any).AndroidNative || (window as any).AndroidBridge;
+    if (native && typeof native.openExternalUrl === "function") {
+      e.preventDefault();
+      native.openExternalUrl(url);
+    }
+  }
   function exportPdfSelection() {
     if (printPayload) return;
     if (pdfSelection.length === 0) {
@@ -357,11 +421,12 @@ export default function Home() {
     setPrintPayload(payload);
     window.setTimeout(() => {
       document.body.classList.add("printing-report");
-      window.print();
+      triggerPrint("تقرير_المواد_المحددة");
+      const isNative = !!((window as any).AndroidNative || (window as any).AndroidBridge);
       window.setTimeout(() => {
         document.body.classList.remove("printing-report");
         setPrintPayload(null);
-      }, 300);
+      }, isNative ? 4000 : 300);
     }, 150);
   }
 
@@ -397,12 +462,13 @@ export default function Home() {
     document.body.classList.add("printing-report");
     Object.assign(report.style, { display: "block", position: "static", width: "100%", padding: "0", margin: "0", background: "#fff", color: "#17202a" });
     window.setTimeout(() => {
-      window.print();
+      triggerPrint("سجل_تقدم_الطالب");
+      const isNative = !!((window as any).AndroidNative || (window as any).AndroidBridge);
       window.setTimeout(() => {
         document.body.classList.remove("printing-report");
         if (previousStyle === null) report.removeAttribute("style");
         else report.setAttribute("style", previousStyle);
-      }, 300);
+      }, isNative ? 4000 : 300);
     }, 120);
   }
   return (
@@ -580,8 +646,8 @@ export default function Home() {
         <section id="resources" className="resources-section">
           <div className="section-heading"><div><span className="section-kicker">04 · بوابتك إلى الجامعة</span><h2>روابط مهمة وأدوات سريعة</h2><p>كل ما تحتاجه لتبقى قريباً من خطتك ومصادرك.</p></div></div>
           <div className="resource-grid">
-            <a className="resource-card" href="https://portal.esems.zu.edu.ly/student-portal/study-student/auth/login" target="_blank" rel="noopener noreferrer"><span className="resource-icon cyan"><Link2 size={20} /></span><span><strong>منظومة الطالب</strong><small>الدخول إلى النظام الأكاديمي</small></span><ExternalLink size={16} /></a>
-            <a className="resource-card" href="https://i.ibb.co/NFzDxmw/petrophysics.png" target="_blank" rel="noopener noreferrer"><span className="resource-icon gold"><Map size={20} /></span><span><strong>خريطة المواد</strong><small>استعرض الخطة الدراسية كاملة</small></span><ExternalLink size={16} /></a>
+            <a className="resource-card" href="https://portal.esems.zu.edu.ly/student-portal/study-student/auth/login" target="_blank" rel="noopener noreferrer" onClick={(e) => handleExternalLink(e, e.currentTarget.href)}><span className="resource-icon cyan"><Link2 size={20} /></span><span><strong>منظومة الطالب</strong><small>الدخول إلى النظام الأكاديمي</small></span><ExternalLink size={16} /></a>
+            <a className="resource-card" href="https://i.ibb.co/NFzDxmw/petrophysics.png" target="_blank" rel="noopener noreferrer" onClick={(e) => handleExternalLink(e, e.currentTarget.href)}><span className="resource-icon gold"><Map size={20} /></span><span><strong>خريطة المواد</strong><small>استعرض الخطة الدراسية كاملة</small></span><ExternalLink size={16} /></a>
             <a className="resource-card" href="https://www.facebook.com/share/1By4abMfmT/" target="_blank" rel="noopener noreferrer"><span className="resource-icon purple"><GraduationCap size={20} /></span><span><strong>عن الكلية والقسم</strong><small>صفحة الكلية على Facebook</small></span><ExternalLink size={16} /></a>
             <button className="resource-card reset-card" onClick={resetProgress}><span className="resource-icon red"><RotateCcw size={20} /></span><span><strong>إعادة ضبط التقدم</strong><small>مسح المواد المنجزة والبدء من جديد</small></span><RotateCcw size={16} /></button>
           </div>
